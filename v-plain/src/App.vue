@@ -1,17 +1,16 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Header from "./components/Header.vue"
+import Footer from "./components/Footer.vue"
+</script>
 
 <!-- Enkel setup för Vue router utifrån Joels basic-exempel. Lägg till sidor i /views och länka i /router -->
 
 <template>
-  <header>
-    <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink :to="{ name: 'about' }">About</RouterLink>
-    </nav>
-  </header>
+  <Header></Header>
   <main>
     <RouterView />
   </main>
+  <Footer></Footer>
 </template>
 
 <style scoped>
