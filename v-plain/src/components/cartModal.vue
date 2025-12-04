@@ -78,7 +78,7 @@ const removeItem = (id) => {
                 <h3>{{ item.name }}</h3>
                 <p class="item-category">{{ item.category }}</p>
                 <div class="item-quantity">
-                  <button @click="decreaseQuantity(item.id)">-</button>
+                  <button @click="decreaseQuantity(item.id)" >-</button>
                   <span>{{ item.quantity }}</span>
                   <button @click="increaseQuantity(item.id)">+</button>
                 </div>
@@ -94,6 +94,9 @@ const removeItem = (id) => {
           <div class="total">
             <span>Totalt:</span>
             <span class="total-price">{{ totalPrice }} kr</span>
+          </div>
+          <div class="checkout-center">
+          <button class="checkout-btn">Till Kassan</button>
           </div>
         </div>
       </div>
@@ -144,10 +147,12 @@ const removeItem = (id) => {
   align-items: center;
   border-radius: 6px;
   transition: 0.2s;
+  color: #FF56A2
 }
 
 .close-btn:hover {
   background-color: #f5f5f5;
+  
 }
 
 .cart-items {
@@ -256,6 +261,7 @@ const removeItem = (id) => {
 .cart-footer {
   padding: 20px 24px;
   border-top: 1px solid #eee;
+  align-items: center;
 }
 .total {
   display: flex;
@@ -274,7 +280,7 @@ const removeItem = (id) => {
 .checkout-btn {
   all: unset;
   cursor: pointer;
-  width: 100%;
+  width: 50%;
   padding: 14px;
   background: var(--action-color);
   color: white;
@@ -283,6 +289,29 @@ const removeItem = (id) => {
   font-weight: 600;
   font-size: 16px;
   transition: 0.2s;
+  
+}
+
+.item-price button {
+  all: unset;
+  cursor: pointer;
+  color:#FF56A2;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: 0.2s;
+  font-weight: 500;
+  
+}
+
+.item-price button:hover {
+  background-color: #ffe5e5;
+  text-decoration: underline;
+}
+
+.checkout-center{
+    display: flex;
+    justify-content: center
 }
 
 .checkout-btn:hover {
