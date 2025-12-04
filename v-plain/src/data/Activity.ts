@@ -1,4 +1,4 @@
-interface Activity {
+export interface Activity {
     activityId: string,
     imgLink: string,
     title: string,
