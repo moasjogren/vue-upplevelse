@@ -46,7 +46,7 @@
 
 <style scoped>
     footer {
-        /* padding: 0 158px; */
+        padding-top: 32px;
         display: flex;
         flex-direction: column;
         align-items: center;

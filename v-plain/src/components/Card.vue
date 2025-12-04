@@ -1,7 +1,9 @@
 <script setup lang="ts">
-    import { defineProps } from 'vue'
+    import { defineProps, computed } from 'vue'
+    import star from "../assets/star.svg"
+    import starEmpty from "../assets/starEmpty.svg"
 
-    defineProps({
+    const cardProps = defineProps({
         activityId: String,
         imgLink: String,
         title: String,
@@ -12,14 +14,26 @@
         duration: Number,
         price: Number,
     })
+
+/*     const displayDifficulty = computed(() => {
+        const fullStars = cardProps.difficulty;
+
+        if (fullStars) {
+            const emptyStars = 5 - fullStars;
+            return star.repeat(fullStars) + starEmpty.repeat(emptyStars);
+        };
+    }); */
+
+    const count: number[] = [1,2,3,4,5];
 </script>
 
 <template>
     <div class="card-container">
         <div class="card-top">
+            <div class="overlay"></div>
             <img :src="imgLink" alt="">
             <div class="card-difficulty">
-                {{ difficulty }}/5
+                <img v-for="number in count" :src="number < difficulty! ? star : starEmpty" alt="">
             </div>
             <div class="card-info">
                 <p>
@@ -37,7 +51,7 @@
             <p class="card-description">{{ description }}</p>
             <div class="card-footer">
                 <button>
-                    Boka
+                    Läs mer
                     <svg viewBox="0 0 24 24" fill="none"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round"></g><g> <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="#F9EDEB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                 </button>
                 <div class="card-price">
@@ -69,22 +83,36 @@
         object-fit: cover;
     }
 
+    .overlay {
+        background-image: linear-gradient(60deg, var(--main-bg-color), var(--main-box-color));
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        opacity: 50%;
+    }
+
     .card-difficulty {
         position: absolute;
-        top: 12px;
-        left: 12px;
-        background-color: rgba(0, 0, 0, 0.7);
-        color: var(--text-color);
-        padding: 8px 12px;
+        top: 0;
+        left: 0;
+        display: flex;
+        gap: 4px;
+        padding: 12px 16px;
         border-radius: 8px;
-        font-weight: bold;
+        font-weight: 600;
+    }
+
+    .card-difficulty img {
+        width: 21px;
+        height: 21px;
     }
 
     .card-info {
         position: absolute;
         top: 0;
         right: 0;
-        background-color: rgba(0, 0, 0, 0.7);
+        height: 100%;
+        width: 100%;
         color: var(--text-color);
         padding: 8px 12px;
         border-radius: 8px;
@@ -96,12 +124,12 @@
         align-items: center;
         justify-content: end;
         gap: 8px;
-        /* margin: 4px 0; */
         font-size: 14px;
     }
 
     .card-bottom {
-        padding: 21px;
+        padding: 21px 28px;
+        z-index: 3;
     }
 
     .card-title {
@@ -126,14 +154,14 @@
         background-color: var(--main-bg-color);
         color: var(--secondary-action-color);
         border: solid 2px var(--main-bg-color);
-        padding: 8px 32px;
+        padding: 8px 21px;
         border-radius: 8px;
         font-weight: bold;
         font-size: 18px;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         transition: 0.2s;
     }
 
@@ -142,7 +170,8 @@
         color: var(--action-color);
 
         svg path {
-        stroke: var(--action-color)
+        stroke: var(--action-color);
+        transition: 0.2s;
         }
     }
 
@@ -152,20 +181,25 @@
     }
 
     button svg path {
-        stroke: var(--secondary-action-color)
+        stroke: var(--secondary-action-color);
+        transition: 0.2s;
     }
 
     .card-price {
         text-align: center;
+        display: flex;
+        flex-direction: column;
     }
 
     .card-price p {
-        margin: 2px 0;
-        font-weight: bold;
+        font-weight: 600;
+        margin: 0;
+        font-size: 26px;
     }
 
     .card-price p:last-child {
         font-size: 12px;
         color: var(--secondary-action-color);
+        margin-top: -6px;
     }
 </style>
