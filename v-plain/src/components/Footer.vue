@@ -56,41 +56,40 @@
 
 <style scoped>
     footer {
-        padding-top: 32px;
+        padding-top: 48px;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
-.footer-content-container {
-  display: flex;
-  /* gap: 112px; */
-  justify-content: space-between;
-  width: 100vw;
-}
+    .footer-content-container {
+        display: flex;
+        justify-content: space-between;
+        width: 80vw;
+    }
 
-section {
-  display: flex;
-  flex-direction: column;
-  margin-right: 18px;
-}
+    section {
+        display: flex;
+        flex-direction: column;
+        margin-right: 18px;
+    }
 
-h3 {
-  font-size: 36px;
-}
+    h3 {
+        font-size: 36px;
+    }
 
-a {
-  color: var(--text-color);
-  margin: 2px;
-}
+    a {
+        color: var(--text-color);
+        margin: 2px;
+    }
 
-iframe {
-  margin-top: 32px;
-  border-radius: 8px;
-}
+    iframe {
+        margin-top: 32px;
+        border-radius: 8px;
+    }
 
-small {
-  color: var(--action-color);
-  padding: 12px 0;
-}
+    small {
+        color: var(--action-color);
+        padding: 12px 0;
+    }
 </style>
