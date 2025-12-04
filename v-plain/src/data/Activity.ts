@@ -8,6 +8,7 @@ export interface Activity {
     age: number,
     duration: number,
     price: number,
+    players: number
 }
 
 const activityList: Activity[] = [
@@ -21,6 +22,7 @@ const activityList: Activity[] = [
         age: 12,
         duration: 90,
         price: 319,
+        players: 5
     }
 ]
 
