@@ -1,41 +1,30 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from "vue";
+import type {Activity} from '../data/Activity.ts'
+
 const props = defineProps({
   isOpen: Boolean,
 });
 
 const emit = defineEmits(["close"]);
 
-const cartItems = ref([
-  {
-    id: 1,
-    name: "Rum 1",
-    price: 700,
-    image: "https://picsum.photos/seed/room1/80/80",
-    quantity: 1,
-    category: "Escape Rooms",
-  },
-  {
-    id: 2,
-    name: "Rum 2",
-    price: 850,
-    image: "https://picsum.photos/seed/room2/80/80",
-    quantity: 1,
-    category: "Escape Rooms",
-  },
-  {
-    id: 3,
-    name: "Rum 3",
-    price: 600,
-    image: "https://picsum.photos/seed/room3/80/80",
-    quantity: 1,
-    category: "Escape Rooms",
-  },
-]);
+const activityList = ref<Activity[]>([
+    {
+        activityId: "hdsh3w421sho12",
+        imgLink: "https://tse3.mm.bing.net/th/id/OIP.uF4xhcEH4QKRB9cX8sMSeAHaFA?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3",
+        title: "Test Title",
+        description: "Lorem Ipsum test text hihi when lorem ipsum went ipsum dipsum",
+        difficulty: 3,
+        capacity: "3-6",
+        age: 12,
+        duration: 90,
+        price: 319,
+    }
+])
 
 const totalPrice = computed(() => {
-  return cartItems.value.reduce(
-    (total, item) => total + item.price * item.quantity,
+  return activityList.value.reduce(
+    (total, item) => total + item.price,
     0
   );
 });
@@ -44,18 +33,9 @@ const closeCart = () => {
   emit("close");
 };
 
-const increaseQuantity = (id) => {
-  const item = cartItems.value.find((item) => item.id === id);
-  if (item) item.quantity++;
-};
 
-const decreaseQuantity = (id) => {
-  const item = cartItems.value.find((item) => item.id === id);
-  if (item && item.quantity > 1) item.quantity--;
-};
-
-const removeItem = (id) => {
-  cartItems.value = cartItems.value.filter((item) => item.id !== id);
+const removeItem = (id: string) => {
+  activityList.value = activityList.value.filter((item) => item.activityId !== id);
 };
 </script>
 
@@ -68,29 +48,30 @@ const removeItem = (id) => {
           <button @click="closeCart" class="close-btn">X</button>
         </div>
         <div class="cart-items">
-          <div v-if="cartItems.length === 0" class="empty-cart">
+          <div v-if="activityList.length === 0" class="empty-cart">
             <p>Din varukorg är tom.</p>
           </div>
           <div v-else>
-            <div v-for="item in cartItems" :key="item.id" class="cart-item">
-              <img :src="item.image" :alt="item.name" />
+            <div v-for="item in activityList" :key="item.activityId" class="cart-item">
+              <img :src="item.imgLink" :alt="item.title" />
               <div class="item-details">
-                <h3>{{ item.name }}</h3>
-                <p class="item-category">{{ item.category }}</p>
-                <div class="item-quantity">
-                  <button @click="decreaseQuantity(item.id)" >-</button>
-                  <span>{{ item.quantity }}</span>
-                  <button @click="increaseQuantity(item.id)">+</button>
+                <h3>{{ item.title }}</h3>
+                <p class="item-description">{{ item.description }}</p>
+                <div class="item-info">
+                  <span class="info-badge">Svårighet: {{ item.difficulty }}/5</span>
+                  <span class="info-badge">Antal personer: {{ item.capacity }}</span>
+                  <span class="info-badge">Ålder: {{ item.age }}+</span>
+                  <span class="info-badge">Tid: {{ item.duration }} min</span>
                 </div>
               </div>
               <div class="item-price">
-                <p>{{ item.price * item.quantity }} kr</p>
-                <button @click="removeItem(item.id)">Ta bort</button>
+                <p>{{ item.price }} kr</p>
+                <button @click="removeItem(item.activityId)">Ta bort</button>
               </div>
             </div>
           </div>
         </div>
-        <div class="cart-footer" v-if="cartItems.length > 0">
+        <div class="cart-footer" v-if="activityList.length > 0">
           <div class="total">
             <span>Totalt:</span>
             <span class="total-price">{{ totalPrice }} kr</span>
@@ -193,8 +174,31 @@ const removeItem = (id) => {
 }
 
 .item-details h3 {
-  margin: 0 0 4px 0;
+  margin: 0 0 8px 0;
   font-size: 16px;
+}
+
+.item-description {
+  color: #666;
+  font-size: 14px;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.item-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.info-badge {
+  background-color: #f0f0f0;
+  color: #666;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .item-category {
