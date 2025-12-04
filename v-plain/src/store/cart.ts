@@ -1,13 +1,13 @@
 import { defineStore } from "pinia";
 import {ref} from "vue";
 
-type Item = {
+export type Item = {
     id: string,
     name: string,
     description: string
 }  
 
-type Cart = {
+export type Cart = {
     items: Item[]
 }
 
@@ -23,6 +23,8 @@ export const useCartStore = defineStore('cart', () => {
             cart.value.items = cart.value.items.filter(item => item.id !== id)
         }
     }
+}, {
+    persist: true
 })
 
 
