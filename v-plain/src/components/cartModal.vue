@@ -19,6 +19,7 @@ const activityList = ref<Activity[]>([
         age: 12,
         duration: 90,
         price: 319,
+        players: 5
     }
 ])
 
