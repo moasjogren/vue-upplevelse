@@ -1,10 +1,9 @@
 <script setup lang="ts">
-    import { defineProps, computed } from 'vue'
     import star from "../assets/star.svg"
     import starEmpty from "../assets/starEmpty.svg"
 
     const cardProps = defineProps({
-        activityId: String,
+        id: String,
         imgLink: String,
         title: String,
         description: String,
@@ -15,15 +14,6 @@
         price: Number,
     })
 
-/*     const displayDifficulty = computed(() => {
-        const fullStars = cardProps.difficulty;
-
-        if (fullStars) {
-            const emptyStars = 5 - fullStars;
-            return star.repeat(fullStars) + starEmpty.repeat(emptyStars);
-        };
-    }); */
-
     const count: number[] = [1,2,3,4,5];
 </script>
 
@@ -33,7 +23,7 @@
             <div class="overlay"></div>
             <img :src="imgLink" alt="">
             <div class="card-difficulty">
-                <img v-for="number in count" :src="number < difficulty! ? star : starEmpty" alt="">
+                <img v-for="number in count" :src="number <= difficulty! ? star : starEmpty" alt="">
             </div>
             <div class="card-info">
                 <p>
@@ -50,19 +40,30 @@
             <h3 class="card-title">{{ title }}</h3>
             <p class="card-description">{{ description }}</p>
             <div class="card-footer">
-                <button>
-                    Läs mer
-                    <svg viewBox="0 0 24 24" fill="none"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round"></g><g> <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="#F9EDEB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                </button>
+                <RouterLink class="bookBtn" :to="`/activity/${id}`"
+                >Läs mer
+
+                <svg viewBox="0 0 24 24" fill="none">
+                    <g stroke-width="0"></g>
+                    <g stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g>
+                    <path
+                        d="M5 12H19M19 12L13 6M19 12L13 18"
+                        stroke="#F9EDEB"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    ></path>
+                    </g>
+                </svg>
+            </RouterLink>
                 <div class="card-price">
                     <p>{{ price }} kr</p>
                     <p>PER PERSON</p>
                 </div>
             </div>
         </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
@@ -72,6 +73,7 @@
         overflow: hidden;
         width: 100%;
         max-width: 300px;
+        height: fit-content;
     }
 
     .card-top {
@@ -144,6 +146,8 @@
         color: var(--text-color);
         margin-bottom: 16px;
         line-height: 1.4;
+        max-height: 60px;
+        overflow: hidden;
     }
 
     .card-footer {
@@ -152,7 +156,7 @@
         align-items: center;
     }
 
-    button {
+    .bookBtn {
         background-color: var(--main-bg-color);
         color: var(--secondary-action-color);
         border: solid 2px var(--main-bg-color);
@@ -163,28 +167,27 @@
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
         transition: 0.2s;
+        text-decoration: none;
     }
 
-    button:hover {
+    .bookBtn:hover {
         border: solid 2px var(--action-color);
         color: var(--action-color);
 
         svg path {
-        stroke: var(--action-color);
-        transition: 0.2s;
+            stroke: var(--action-color);
         }
     }
 
-    button svg {
+    .bookBtn svg {
         width: 26px;
         height: 26px;
     }
 
-    button svg path {
+    .bookBtn svg path {
         stroke: var(--secondary-action-color);
-        transition: 0.2s;
     }
 
     .card-price {

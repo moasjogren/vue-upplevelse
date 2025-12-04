@@ -24,6 +24,7 @@ const activityList: Activity[] = [
     age: 12,
     duration: 90,
     price: 319,
+    players: 0,
   },
   {
     id: "kd92jf83nsla94",
@@ -37,6 +38,7 @@ const activityList: Activity[] = [
     age: 15,
     duration: 75,
     price: 399,
+    players: 2
   },
   {
     id: "pl28hs73mqw156",
@@ -50,6 +52,7 @@ const activityList: Activity[] = [
     age: 10,
     duration: 60,
     price: 279,
+    players: 3
   },
 ];
 

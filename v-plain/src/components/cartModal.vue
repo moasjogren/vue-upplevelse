@@ -10,7 +10,7 @@ const emit = defineEmits(["close"]);
 
 const activityList = ref<Activity[]>([
     {
-        activityId: "hdsh3w421sho12",
+        id: "hdsh3w421sho12",
         imgLink: "https://tse3.mm.bing.net/th/id/OIP.uF4xhcEH4QKRB9cX8sMSeAHaFA?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3",
         title: "Test Title",
         description: "Lorem Ipsum test text hihi when lorem ipsum went ipsum dipsum",
@@ -36,7 +36,7 @@ const closeCart = () => {
 
 
 const removeItem = (id: string) => {
-  activityList.value = activityList.value.filter((item) => item.activityId !== id);
+  activityList.value = activityList.value.filter((item) => item.id !== id);
 };
 </script>
 
@@ -53,7 +53,7 @@ const removeItem = (id: string) => {
             <p>Din varukorg är tom.</p>
           </div>
           <div v-else>
-            <div v-for="item in activityList" :key="item.activityId" class="cart-item">
+            <div v-for="item in activityList" :key="item.id" class="cart-item">
               <img :src="item.imgLink" :alt="item.title" />
               <div class="item-details">
                 <h3>{{ item.title }}</h3>
@@ -67,7 +67,7 @@ const removeItem = (id: string) => {
               </div>
               <div class="item-price">
                 <p>{{ item.price }} kr</p>
-                <button @click="removeItem(item.activityId)">Ta bort</button>
+                <button @click="removeItem(item.id)">Ta bort</button>
               </div>
             </div>
           </div>
