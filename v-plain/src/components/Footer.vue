@@ -55,12 +55,12 @@
 </template>
 
 <style scoped>
-footer {
-  /* padding: 0 158px; */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+    footer {
+        padding-top: 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
 .footer-content-container {
   display: flex;

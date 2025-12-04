@@ -1,13 +1,13 @@
-interface Activity {
-  id: string;
-  imgLink: string;
-  title: string;
-  description: string;
-  difficulty: number;
-  capacity: string;
-  age: number;
-  duration: number;
-  price: number;
+export interface Activity {
+    id: string,
+    imgLink: string,
+    title: string,
+    description: string,
+    difficulty: number,
+    capacity: string,
+    age: number,
+    duration: number,
+    price: number,
 }
 
 const activityList: Activity[] = [

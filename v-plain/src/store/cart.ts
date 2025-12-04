@@ -1,14 +1,10 @@
 import { defineStore } from "pinia";
 import {ref} from "vue";
+import type {Activity} from '../data/Activity.ts'
 
-export type Item = {
-    id: string,
-    name: string,
-    description: string
-}  
 
-export type Cart = {
-    items: Item[]
+ export type Cart = {
+    items: Activity[]
 }
 
 export const useCartStore = defineStore('cart', () => {
@@ -16,11 +12,11 @@ export const useCartStore = defineStore('cart', () => {
 
     return {
         cart,
-        addItem(item: Item) {
+        addItem(item: Activity) {
             cart.value.items.push(item)
         },
-        removeItem(id: String) {
-            cart.value.items = cart.value.items.filter(item => item.id !== id)
+        removeItem(id: string) {
+            cart.value.items = cart.value.items.filter(item => item.activityId !== id)
         }
     }
 }, {
