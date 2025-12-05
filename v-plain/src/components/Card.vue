@@ -37,8 +37,11 @@
             </div>
         </div>
         <div class="card-bottom">
-            <h3 class="card-title">{{ title }}</h3>
-            <p class="card-description">{{ description }}</p>
+            <article>
+                <h3 class="card-title">{{ title }}</h3>
+                <p class="card-description">{{ description }}</p>
+            </article>
+            
             <div class="card-footer">
                 <RouterLink class="bookBtn" :to="`/activity/${id}`"
                 >Läs mer
@@ -71,8 +74,7 @@
         background-color: var(--main-box-color);
         border-radius: 8px;
         overflow: hidden;
-        width: 100%;
-        max-width: 300px;
+        width: 360px;
         height: fit-content;
     }
 
@@ -100,15 +102,15 @@
         top: 0;
         left: 0;
         display: flex;
-        gap: 4px;
+        gap: 6px;
         padding: 12px 16px;
         border-radius: 8px;
         font-weight: 600;
     }
 
     .card-difficulty img {
-        width: 21px;
-        height: 21px;
+        width: 24px;
+        height: 24px;
     }
 
     .card-info {
@@ -128,32 +130,34 @@
         align-items: center;
         justify-content: end;
         gap: 8px;
-        font-size: 14px;
+        font-size: 16px;
     }
 
     .card-bottom {
-        padding: 21px 28px;
-        z-index: 3;
+        padding: 21px 36px;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .card-title {
-        font-size: 24px;
+        font-size: 26px;
         margin-bottom: 8px;
     }
 
     .card-description {
-        font-size: 16px;
+        font-size: 17px;
         color: var(--text-color);
         margin-bottom: 16px;
         line-height: 1.4;
-        max-height: 60px;
-        overflow: hidden;
     }
 
     .card-footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        
     }
 
     .bookBtn {
@@ -199,11 +203,11 @@
     .card-price p {
         font-weight: 600;
         margin: 0;
-        font-size: 26px;
+        font-size: 28px;
     }
 
     .card-price p:last-child {
-        font-size: 12px;
+        font-size: 14px;
         color: var(--secondary-action-color);
         margin-top: -6px;
     }
