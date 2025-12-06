@@ -28,4 +28,7 @@ server/node_modules/
 server/dist/
 server/.env
 
+# AI Dokumentation (personlig)
+AI-INTEGRATION-DETALJERAD.md
+
 ``
