@@ -16,80 +16,82 @@
         </div>
     </header>
 </template>
+
 <script setup>
-import { ref } from 'vue'
-import CartModal from './CartModal.vue'
+    import { ref } from 'vue'
+    import CartModal from './cartModal.vue'
 
-const isCartOpen = ref(false)
+    const isCartOpen = ref(false)
 
-const openCart = () => {
-    isCartOpen.value = true
-}
+    const openCart = () => {
+        isCartOpen.value = true
+    }
 
-const closeCart = () => {
-    isCartOpen.value = false
-}
+    const closeCart = () => {
+        isCartOpen.value = false
+    }
 </script>
+
 <style scoped>
-header {
-  display: flex;
-  justify-content: center;
-  padding: 12px 0;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
-}
+    header {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+    }
 
-.header-content {
-  display: flex;
-  align-items: center;
-  width: 80vw;
-  justify-content: space-between;
-}
+    .header-content {
+    display: flex;
+    align-items: center;
+    width: 80vw;
+    justify-content: space-between;
+    }
 
-.logo h1 {
-  margin: 0;
-  font-size: 62px;
-}
+    .logo h1 {
+    margin: 0;
+    font-size: 62px;
+    }
 
-.logo svg {
-  width: 62px;
-  height: 62px;
-}
+    .logo svg {
+    width: 62px;
+    height: 62px;
+    }
 
-nav {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-}
+    nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    }
 
-nav a {
-  color: var(--secondary-action-color);
-  text-decoration: none;
-  font-size: 21px;
-  font-weight: 600;
-  transition: 0.1s;
-}
+    nav a {
+    color: var(--secondary-action-color);
+    text-decoration: none;
+    font-size: 21px;
+    font-weight: 600;
+    transition: 0.1s;
+    }
 
-nav a:hover {
-  color: var(--action-color);
-}
+    nav a:hover {
+    color: var(--action-color);
+    }
 
-button {
-  all: unset;
-  cursor: pointer;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  border-radius: 8px;
-  transition: 0.1s;
-}
+    button {
+    all: unset;
+    cursor: pointer;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    transition: 0.1s;
+    }
 
-button svg {
-  fill: var(--action-color);
-  width: 36px;
-  height: 36px;
-}
+    button svg {
+    fill: var(--action-color);
+    width: 36px;
+    height: 36px;
+    }
 
-button:hover {
-  background-color: var(--main-box-color);
-}
+    button:hover {
+    background-color: var(--main-box-color);
+    }
 </style>
