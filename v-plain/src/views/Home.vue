@@ -39,5 +39,6 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  gap: 28px 0;
 }
 </style>
