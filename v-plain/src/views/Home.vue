@@ -1,12 +1,11 @@
 <script setup lang="ts">
-  import activityList from "../data/Activity";
-  import Card from "../components/Card.vue";
+import activityList from "../data/Activity";
+import Card from "../components/Card.vue";
 </script>
 
 <template>
   <main>
     <div class="main-content">
-      <h1>Home</h1>
       <div class="cards">
         <Card
           v-for="activity in activityList"
