@@ -17,7 +17,18 @@ function goBack() {
 <template>
   <main>
     <div class="main-content">
-      <button class="back-btn" @click="goBack">< Tillbaka</button>
+      <button class="back-btn" @click="goBack">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="20px"
+          viewBox="0 -960 960 960"
+          width="20px"
+          fill="#ffafc5"
+        >
+          <path d="M576-288 384-480l192-192v384Z" />
+        </svg>
+        Tillbaka
+      </button>
 
       <div class="activity-container">
         <h1>{{ activityData.title }}</h1>
@@ -38,7 +49,7 @@ function goBack() {
                   d="M360-840v-80h240v80H360Zm80 440h80v-240h-80v240Zm40 320q-74 0-139.5-28.5T226-186q-49-49-77.5-114.5T120-440q0-74 28.5-139.5T226-694q49-49 114.5-77.5T480-800q62 0 119 20t107 58l56-56 56 56-56 56q38 50 58 107t20 119q0 74-28.5 139.5T734-186q-49 49-114.5 77.5T480-80Zm0-80q116 0 198-82t82-198q0-116-82-198t-198-82q-116 0-198 82t-82 198q0 116 82 198t198 82Zm0-280Z"
                 />
               </svg>
-              >{{ activityData.duration }} min
+              {{ activityData.duration }} min
             </p>
             <h4>Passar till</h4>
             <div class="difficulty">
@@ -54,6 +65,145 @@ function goBack() {
           </div>
         </div>
       </div>
+
+      <form class="schedule-container">
+        <div class="schedule-top">
+          <h2>
+            {{
+              new Date().toLocaleDateString("sv-SE", {
+                weekday: "long",
+                day: "numeric",
+                month: "numeric",
+              })
+            }}
+          </h2>
+          <p><span class="kronor">100 kr</span> <br />per person</p>
+        </div>
+        <div class="schedule-times">
+          <button class="time-btn">11:00</button>
+          <button class="time-btn">13:00</button>
+          <button class="time-btn">15:00</button>
+          <button class="time-btn">17:00</button>
+          <button class="time-btn">19:00</button>
+          <button class="time-btn">21:00</button>
+        </div>
+
+        <div class="add-ons">
+          <p>Tillägg</p>
+          <div class="add-on-card">
+            <div class="add-on-card-left">
+              <img :src="activityData.imgLink" />
+              <p><span class="kronor">Hotell</span> <br />En natt på Scandic</p>
+            </div>
+
+            <div class="add-on-card-right">
+              <p><span class="kronor">899 kr</span> <br />per person</p>
+              <button class="time-btn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#ffafc5"
+                >
+                  <path
+                    d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="add-on-card">
+            <div class="add-on-card-left">
+              <img :src="activityData.imgLink" />
+              <p><span class="kronor">Mat</span> <br />Buffé på Vapiano</p>
+            </div>
+
+            <div class="add-on-card-right">
+              <p><span class="kronor">239 kr</span> <br />per person</p>
+              <button class="time-btn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#ffafc5"
+                >
+                  <path
+                    d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="add-on-card">
+            <div class="add-on-card-left">
+              <img :src="activityData.imgLink" />
+              <p>
+                <span class="kronor">VR-upplevelse</span> <br />Lös ett escape
+                room i VR!
+              </p>
+            </div>
+
+            <div class="add-on-card-right">
+              <p><span class="kronor">189 kr</span> <br />per person</p>
+              <button class="time-btn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#ffafc5"
+                >
+                  <path
+                    d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="total-sum">
+          <div class="total-sum-right">
+            <p>Antal personer</p>
+            <label
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="20px"
+                viewBox="0 -1150 960 960"
+                width="20px"
+                fill="#ffafc5"
+              >
+                <path
+                  d="M40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm720 0v-120q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v120H760ZM360-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113ZM120-240h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Zm0 320Zm0-400Z"
+                /></svg
+            ></label>
+            <input type="number" />
+          </div>
+          <div class="total-sum-left">
+            <p>
+              Totalt: <br />
+              <span class="kronor">Siffra här</span>
+            </p>
+            <button class="time-btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#ffafc5"
+              >
+                <path
+                  d="m480-560-56-56 63-64H320v-80h167l-64-64 57-56 160 160-160 160ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
   </main>
 </template>
@@ -84,10 +234,9 @@ function goBack() {
 }
 
 .activity-container {
-  height: 100vh;
   padding: 8px 12px;
-  border-radius: 16px;
   margin-bottom: 20px;
+  max-width: 800px;
 }
 
 .activity-content {
@@ -128,5 +277,121 @@ function goBack() {
 .difficulty-box:last-of-type {
   border-left: 1px solid var(--text-color);
   padding-left: 8px;
+}
+
+.schedule-container {
+  padding: 8px 12px;
+  margin-bottom: 20px;
+  max-width: 800px;
+  background-color: var(--main-box-color);
+  border-radius: 8px;
+}
+
+.schedule-top {
+  display: flex;
+  height: fit-content;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--text-color);
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.kronor {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.schedule-times {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.time-btn {
+  background-color: var(--main-bg-color);
+  color: var(--secondary-action-color);
+  border: solid 2px var(--main-bg-color);
+  padding: 8px 21px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
+  text-decoration: none;
+  height: fit-content;
+}
+
+.time-btn:hover {
+  border: solid 2px var(--action-color);
+  color: var(--action-color);
+
+  svg path {
+    fill: var(--action-color);
+  }
+}
+
+.add-ons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.add-on-card {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.add-on-card-left {
+  display: flex;
+  gap: 10px;
+  width: 250px;
+}
+
+.add-on-card-right {
+  display: flex;
+  justify-content: space-between;
+  width: 150px;
+  height: fit-content;
+  align-items: center;
+}
+
+.total-sum {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--text-color);
+  margin-top: 30px;
+  padding-top: 10px;
+}
+
+.total-sum-right {
+  height: fit-content;
+  align-items: center;
+}
+
+.total-sum-right > input {
+  width: 60px;
+  margin-left: 10px;
+  padding: 4px;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--text-color);
+  font-size: 14px;
+  border: none;
+}
+
+.total-sum-left {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  height: fit-content;
+  align-items: center;
 }
 </style>
