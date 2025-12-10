@@ -6,6 +6,7 @@
   --action-color: #ff56a2;
   --secondary-action-color: #ffafc5;
   --text-color: #f9edeb;
+  --transparent-color: rgba(255, 255, 255, 0.3);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

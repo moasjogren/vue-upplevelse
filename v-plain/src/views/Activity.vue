@@ -92,7 +92,7 @@ const count: number[] = [1,2,3,4,5];
               })
             }}
           </h2>
-          <p><span class="kronor">100 kr</span> <br />per person</p>
+          <p><span class="kronor">100 kr</span> <br />PER PERSON</p>
         </div>
         <div class="schedule-times">
           <button class="time-btn">11:00</button>
@@ -104,7 +104,7 @@ const count: number[] = [1,2,3,4,5];
         </div>
 
         <div class="add-ons">
-          <p>Tillägg</p>
+          <h3>Tillägg</h3>
           <div class="add-on-card">
             <div class="add-on-card-left">
               <img :src="activityData!.imgLink" />
@@ -112,7 +112,7 @@ const count: number[] = [1,2,3,4,5];
             </div>
 
             <div class="add-on-card-right">
-              <p><span class="kronor">899 kr</span> <br />per person</p>
+              <p><span class="kronor">899 kr</span> <br />PER PERSON</p>
               <button class="time-btn">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +136,7 @@ const count: number[] = [1,2,3,4,5];
             </div>
 
             <div class="add-on-card-right">
-              <p><span class="kronor">239 kr</span> <br />per person</p>
+              <p><span class="kronor">239 kr</span> <br />PER PERSON</p>
               <button class="time-btn">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -163,7 +163,7 @@ const count: number[] = [1,2,3,4,5];
             </div>
 
             <div class="add-on-card-right">
-              <p><span class="kronor">189 kr</span> <br />per person</p>
+              <p><span class="kronor">189 kr</span> <br />PER PERSON</p>
               <button class="time-btn">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -187,9 +187,9 @@ const count: number[] = [1,2,3,4,5];
             <label
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
-                height="20px"
+                height="24px"
                 viewBox="0 -1150 960 960"
-                width="20px"
+                width="24px"
                 fill="#ffafc5"
               >
                 <path
@@ -204,17 +204,7 @@ const count: number[] = [1,2,3,4,5];
               <span class="kronor">Siffra här</span>
             </p>
             <button class="time-btn">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#ffafc5"
-              >
-                <path
-                  d="m480-560-56-56 63-64H320v-80h167l-64-64 57-56 160 160-160 160ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"
-                />
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#ffafc5"><path d="M456.67-608.67v-122H334v-66.66h122.67v-122h66.66v122h122v66.66h-122v122h-66.66ZM286.53-80q-30.86 0-52.7-21.97Q212-123.95 212-154.81q0-30.86 21.98-52.69 21.97-21.83 52.83-21.83t52.69 21.97q21.83 21.98 21.83 52.84 0 30.85-21.97 52.69Q317.38-80 286.53-80Zm402.66 0q-30.86 0-52.69-21.97-21.83-21.98-21.83-52.84 0-30.86 21.97-52.69 21.98-21.83 52.84-21.83 30.85 0 52.69 21.97Q764-185.38 764-154.52q0 30.85-21.97 52.69Q720.05-80 689.19-80ZM54.67-813.33V-880h121l170 362.67H630.8l158.87-280h75L698-489.33q-11 19.33-28.87 30.66-17.88 11.34-39.13 11.34H328.67l-52 96H764v66.66H282.67q-40.11 0-61.06-33-20.94-33-2.28-67L280-496 133.33-813.33H54.67Z"/></svg>
             </button>
           </div>
         </div>
@@ -337,7 +327,7 @@ const count: number[] = [1,2,3,4,5];
 }
 
 .difficulty-box:last-of-type {
-  border-left: 2px solid rgba(255, 255, 255, 0.3);
+  border-left: 2px solid var(--transparent-color);
   padding-left: 24px;
 }
 
@@ -347,7 +337,7 @@ const count: number[] = [1,2,3,4,5];
 }
 
 .schedule-container {
-  padding: 8px 12px;
+  padding: 21px 62px;
   margin-bottom: 20px;
   /* max-width: 800px; */
   background-color: var(--main-box-color);
@@ -359,30 +349,44 @@ const count: number[] = [1,2,3,4,5];
   height: fit-content;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--text-color);
+  border-bottom: 2px solid var(--transparent-color);
   padding-bottom: 10px;
   margin-bottom: 10px;
 }
 
-.kronor {
-  font-size: 20px;
+.schedule-top h2 {
+  text-transform: capitalize;
+  font-size: 32px;
   font-weight: 600;
+}
+
+.schedule-top p, .add-on-card-right p {
+  text-align: center;
+  color: var(--secondary-action-color);
+  font-weight: 500;
+}
+
+.schedule-top .kronor {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1;
 }
 
 .schedule-times {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin: 20px 0;
 }
 
 .time-btn {
   background-color: var(--main-bg-color);
   color: var(--secondary-action-color);
   border: solid 2px var(--main-bg-color);
-  padding: 8px 21px;
+  padding: 12px 36px;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 21px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -398,6 +402,7 @@ const count: number[] = [1,2,3,4,5];
 
   svg path {
     fill: var(--action-color);
+    transition: 0.1s;
   }
 }
 
@@ -405,36 +410,69 @@ const count: number[] = [1,2,3,4,5];
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 10px;
+}
+
+.add-ons h3 {
+  font-size: 21px;
+  font-weight: 500;
+  color: var(--secondary-action-color);
+  margin-top: 24px;
 }
 
 .add-on-card {
   display: flex;
   justify-content: space-between;
-  height: 50px;
+  height: fit-content;
   padding: 10px;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
 }
 
+.add-on-card img {
+  width: 100px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
 .add-on-card-left {
   display: flex;
+  align-items: center;
   gap: 10px;
-  width: 250px;
+  /* width: fit-content; */
+}
+
+.add-on-card-left .kronor {
+  font-size: 21px;
+  font-weight: 500;
 }
 
 .add-on-card-right {
   display: flex;
   justify-content: space-between;
-  width: 150px;
-  height: fit-content;
   align-items: center;
+  gap: 10px;
+}
+
+.add-on-card-right p {
+  font-size: 12px;
+}
+
+.add-on-card-right .kronor {
+  font-size: 21px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.add-on-card-right .time-btn {
+  padding: 16px;
 }
 
 .total-sum {
   display: flex;
   justify-content: space-between;
-  border-top: 1px solid var(--text-color);
+  border-top: 2px solid var(--transparent-color);
   margin-top: 30px;
   padding-top: 10px;
 }
@@ -444,21 +482,48 @@ const count: number[] = [1,2,3,4,5];
   align-items: center;
 }
 
-.total-sum-right > input {
-  width: 60px;
+.total-sum-right p {
+  /* margin-bottom: 8px; */
+  font-size: 21px;
+}
+
+.total-sum-right label svg {
+  width: 32px;
   margin-left: 10px;
-  padding: 4px;
+}
+
+.total-sum-right > input {
+  width: 70px;
+  height: 15px;
+  text-align: center;
+  border-radius: 8px;
+  margin-left: 10px;
+  padding: 8px;
   background-color: rgba(0, 0, 0, 0.2);
   color: var(--text-color);
-  font-size: 14px;
+  font-size: 16px;
   border: none;
 }
 
 .total-sum-left {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 18px;
   height: fit-content;
   align-items: center;
+}
+
+.total-sum-left p {
+  font-size: 16px;
+}
+
+.total-sum-left .kronor {
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.total-sum-left .time-btn {
+  display: flex;
+  padding: 12px;
 }
 </style>
