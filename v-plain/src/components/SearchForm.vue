@@ -8,12 +8,6 @@
 
 <template>
     <div class="search-container">
-        <input 
-        v-model="searchQuery" 
-        type="text" 
-        placeholder="Sök..."
-        class="search-input" 
-        />
         <div class="filters">
             <select name="difficulty" id="difficulty" v-model.number="difficulty">
                 <option :value="null">Alla svårighetsgrader</option>
@@ -21,20 +15,27 @@
                 <option :value="2">Medel</option>
                 <option :value="3">Svår</option>
             </select>
-            <input 
-            v-model.number="minAge" 
-            type="number" 
-            placeholder="Minsta tillåtna ålder" 
-            />
-            <input 
-            v-model.number="maxPrice"
-            type="number" 
-            placeholder="högsta pris"
-            />
+            
+            <div class="input-wrapper">
+                <input 
+                v-model.number="minAge" 
+                type="number" 
+                placeholder="Minsta ålder" 
+                />
+                <span class="input-suffix">år</span>
+            </div>
 
-            <button @click=searchStore.clearFilters()>Rensa filter</button>
+            <div class="input-wrapper">
+                <input 
+                v-model.number="maxPrice"
+                type="number" 
+                placeholder="Högsta pris"
+                />
+                <span class="input-suffix">kr</span>
+            </div>
+
+            <button @click="searchStore.clearFilters()">Rensa filter</button>
         </div>
-
     </div>
 </template>
 
@@ -42,16 +43,6 @@
 .search-container {
   width: 80%;
   margin-bottom: 20px;
-  
-}
-.search-input{
-    width:100%;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: var(--secondary-action-color);
-
 }
 
 .filters{
@@ -59,13 +50,16 @@
     gap: 10px;
     margin-top: 10px;
     flex-wrap: wrap;
+    align-items: center;
 }
+
 .filters input, .filters select{
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: var(--secondary-action-color);
 }
+
 .filters button{
     padding: 8px 16px;
     cursor: pointer;
@@ -79,5 +73,32 @@
     color:black;
 }
 
-.select {}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Input med suffix */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  padding-right: 35px;
+}
+
+.input-suffix {
+  position: absolute;
+  right: 12px;
+  color: #666;
+  font-size: 14px;
+  pointer-events: none;
+}
 </style>
