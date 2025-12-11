@@ -11,21 +11,8 @@
     <div class="main-content">
       <div class="hero-action-symbol">
             <img src="../assets/arrowstar.svg" alt="star" class="star">
-            <svg viewBox="0 0 24 24" fill="none">
-                    <g stroke-width="0"></g>
-                    <g stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g>
-                    <path
-                        d="M5 12H19M19 12L13 6M19 12L13 18"
-                        stroke="#F9EDEB"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    ></path>
-                    </g>
-                </svg>
-        </div>
-      <h1>Home</h1>
+            <svg viewBox="0 0 24 24" fill="none"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round"></g><g><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="#F9EDEB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+      </div>
       
       <div class="cards">
         <Card
@@ -53,6 +40,7 @@ main {
 }
 .main-content {
   width: 80vw;
+  padding: 124px 0 68px 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -70,10 +58,11 @@ main {
   animation: spin infinite 20s linear;
   position: relative;
   z-index: 5;
+  width: 124px;
 }
 
 .hero-action-symbol svg {
-  width: 86px;
+  width: 76px;
   position: absolute;
   transform: rotate(90deg) translate(38%, 132%);;
   
