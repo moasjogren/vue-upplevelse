@@ -207,21 +207,12 @@ console.log("Waiting for AI activities or using fallback...");
         <p>🔄 Genererar AI-aktiviteter... Detta kan ta upp till en minut.</p>
       </div>
 
-      <div class="cards" v-if="filteredActivities.length > 0 && !loading">
-        <Card
-          v-for="activity in filteredActivities"
-          :key="activity.id"
-          :id="activity.id"
-          :imgLink="activity.imgLink"
-          :title="activity.title"
-          :description="activity.description"
-          :difficulty="activity.difficulty"
-          :capacity="activity.capacity"
-          :ageRange="activity.ageRange"
-          :duration="activity.duration"
-          :price="activity.price"
+      <div class="carousel-wrapper" v-else-if="filteredActivities.length > 0">
+        <Carousel
+          :cards="filteredActivities"
+          :key="filteredActivities.length"
         />
-      </div>
+        </div>
 
       <div v-else-if="!loading" class="loading-state">
         <p>
@@ -232,38 +223,7 @@ console.log("Waiting for AI activities or using fallback...");
         </p>
       </div>
 
-      <!-- AI-integration: Pagination för att bläddra mellan sidor -->
-      <!-- <div v-if="totalPages > 1" class="pagination">
-        <button
-          class="page-btn"
-          @click="goToPage(currentPage - 1)"
-          :disabled="currentPage === 1"
-        >
-          ← Föregående
-        </button>
-
-        <div class="page-numbers">
-          <button
-            v-for="page in totalPages"
-            :key="page"
-            class="page-number"
-            :class="{ active: page === currentPage }"
-            @click="goToPage(page)"
-          >
-            {{ page }}
-          </button>
-        </div>
-
-        <button
-          class="page-btn"
-          @click="goToPage(currentPage + 1)"
-          :disabled="currentPage === totalPages"
-        >
-          Nästa →
-        </button>
-      </div>
-      <p v-if="filteredActivities.length === 0">Inga aktiviteter hittades</p>
-    </div> --> 
+  
     </div>
 
     <!-- Floating chat button -->
@@ -391,5 +351,12 @@ main {
   transform: scale(0.95);
   flex-wrap: wrap;
   gap: 28px 0;
+}
+
+.carousel-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
