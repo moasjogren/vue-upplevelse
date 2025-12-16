@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import type {Activity} from '../data/Activity.ts'
+import { ref, computed, onMounted } from "vue";
+import type { Activity } from "../data/Activity.ts";
 
 const props = defineProps({
   isOpen: Boolean,
@@ -8,35 +8,32 @@ const props = defineProps({
 
 const emit = defineEmits(["close"]);
 
-const activityList = ref<Activity[]>([
-    {
-        id: "hdsh3w421sho12",
-        imgLink: "https://tse3.mm.bing.net/th/id/OIP.uF4xhcEH4QKRB9cX8sMSeAHaFA?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3",
-        title: "Test Title",
-        description: "Lorem Ipsum test text hihi when lorem ipsum went ipsum dipsum",
-        difficulty: 3,
-        capacity: 6,
-        ageRange: "barn",
-        duration: 90,
-        price: 319,
-    }
-])
+const bookingData = ref<Activity[]>([]);
 
 const totalPrice = computed(() => {
-  return activityList.value.reduce(
-    (total, item) => total + item.price,
-    0
-  );
+  return bookingData.value.reduce((total, item) => total + item.price, 0);
 });
 
 const closeCart = () => {
   emit("close");
 };
 
-
 const removeItem = (id: string) => {
-  activityList.value = activityList.value.filter((item) => item.id !== id);
+  bookingData.value = bookingData.value.filter((item) => item.id !== id);
+  localStorage.setItem("bookingData", JSON.stringify(bookingData.value));
 };
+
+onMounted(() => {
+  const storedData = localStorage.getItem("bookingData");
+  if (storedData) {
+    try {
+      bookingData.value = JSON.parse(storedData);
+      console.log(bookingData.value);
+    } catch (error) {
+      console.error("Failed to parse booking data:", error);
+    }
+  }
+});
 </script>
 
 <template>
@@ -48,19 +45,23 @@ const removeItem = (id: string) => {
           <button @click="closeCart" class="close-btn">X</button>
         </div>
         <div class="cart-items">
-          <div v-if="activityList.length === 0" class="empty-cart">
+          <div v-if="bookingData.length === 0" class="empty-cart">
             <p>Din varukorg är tom.</p>
           </div>
           <div v-else>
-            <div v-for="item in activityList" :key="item.id" class="cart-item">
+            <div v-for="item in bookingData" :key="item.id" class="cart-item">
               <img :src="item.imgLink" :alt="item.title" />
               <div class="item-details">
                 <h3>{{ item.title }}</h3>
                 <p class="item-description">{{ item.description }}</p>
                 <div class="item-info">
-                  <span class="info-badge">Svårighet: {{ item.difficulty }}/5</span>
-                  <span class="info-badge">Antal personer: {{ item.capacity }}</span>
-                  <span class="info-badge">Ålder: {{ item.ageRange }}</span>
+                  <span class="info-badge"
+                    >Svårighet: {{ item.difficulty }}/5</span
+                  >
+                  <span class="info-badge"
+                    >Antal personer: {{ item.capacity }}</span
+                  >
+                  <span class="info-badge">Ålder: {{ item.ageRange }}+</span>
                   <span class="info-badge">Tid: {{ item.duration }} min</span>
                 </div>
               </div>
@@ -71,13 +72,13 @@ const removeItem = (id: string) => {
             </div>
           </div>
         </div>
-        <div class="cart-footer" v-if="activityList.length > 0">
+        <div class="cart-footer" v-if="bookingData.length > 0">
           <div class="total">
             <span>Totalt:</span>
             <span class="total-price">{{ totalPrice }} kr</span>
           </div>
           <div class="checkout-center">
-          <button class="checkout-btn">Till Kassan</button>
+            <button class="checkout-btn">Till Kassan</button>
           </div>
         </div>
       </div>
@@ -117,7 +118,7 @@ const removeItem = (id: string) => {
 }
 .modal-header h2 {
   margin: 0;
-  color: #FF56A2;
+  color: #ff56a2;
 }
 
 .close-btn {
@@ -128,12 +129,11 @@ const removeItem = (id: string) => {
   align-items: center;
   border-radius: 6px;
   transition: 0.2s;
-  color: #FF56A2
+  color: #ff56a2;
 }
 
 .close-btn:hover {
   background-color: #f5f5f5;
-  
 }
 
 .cart-items {
@@ -213,8 +213,8 @@ const removeItem = (id: string) => {
   align-items: center;
 }
 
-.item-details{
-    color: #FF56A2;
+.item-details {
+  color: #ff56a2;
 }
 
 .item-quantity button {
@@ -247,7 +247,7 @@ const removeItem = (id: string) => {
   margin: 0;
   font-weight: 600;
   font-size: 18px;
-  color: #FF56A2;
+  color: #ff56a2;
 }
 
 .remove-btn {
@@ -274,7 +274,7 @@ const removeItem = (id: string) => {
   margin-bottom: 16px;
   font-size: 20px;
   font-weight: 600;
-  color:#FF56A2;
+  color: #ff56a2;
 }
 
 .total-price {
@@ -293,19 +293,17 @@ const removeItem = (id: string) => {
   font-weight: 600;
   font-size: 16px;
   transition: 0.2s;
-  
 }
 
 .item-price button {
   all: unset;
   cursor: pointer;
-  color:#FF56A2;
+  color: #ff56a2;
   font-size: 14px;
   padding: 8px 12px;
   border-radius: 6px;
   transition: 0.2s;
   font-weight: 500;
-  
 }
 
 .item-price button:hover {
@@ -313,9 +311,9 @@ const removeItem = (id: string) => {
   text-decoration: underline;
 }
 
-.checkout-center{
-    display: flex;
-    justify-content: center
+.checkout-center {
+  display: flex;
+  justify-content: center;
 }
 
 .checkout-btn:hover {
