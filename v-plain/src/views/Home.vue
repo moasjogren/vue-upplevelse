@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import Card from "../components/Card.vue";
+// import Card from "../components/Card.vue";
 import ChatBot from "../components/ChatBot.vue";
 import Hero from "../components/HeroBanner.vue";
 import SearchForm from "../components/SearchForm.vue";
@@ -10,12 +10,13 @@ import type { Activity } from "../data/Activity";
 import activityList from "../data/Activity";
 import { storeToRefs } from "pinia";
 import { useSearchStore } from "../store/searchStore";
+import Carousel from "../components/Carousel.vue";
 
 // AI-integration: State för aktiviteter, laddning och felhantering
 const loading = ref(false);
 const error = ref("");
 const currentPage = ref(1);
-const itemsPerPage = 6;
+// const itemsPerPage = 6;
 const componentKey = ref(0); // För att tvinga re-render
 const showChatBot = ref(false);
 
@@ -88,16 +89,16 @@ onMounted(async () => {
 });
 
 // AI-integration: Beräkna vilka aktiviteter som ska visas på nuvarande sida
-const paginatedActivities = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return filteredActivities.value.slice(start, end);
-});
+// const paginatedActivities = computed(() => {
+//   const start = (currentPage.value - 1) * itemsPerPage;
+//   const end = start + itemsPerPage;
+//   return filteredActivities.value.slice(start, end);
+// });
 
 // AI-integration: Beräkna totalt antal sidor
-const totalPages = computed(() => {
-  return Math.ceil(filteredActivities.value.length / itemsPerPage);
-});
+// const totalPages = computed(() => {
+//   return Math.ceil(filteredActivities.value.length / itemsPerPage);
+// });
 
 // AI-integration: Funktion som anropar backend för att generera nya aktiviteter
 const handleGenerateActivities = async () => {
@@ -148,15 +149,15 @@ const handleGenerateActivities = async () => {
 };
 
 // AI-integration: Navigeringsfunktioner för pagination
-const goToPage = (page: number) => {
-  if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page;
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-};
+// const goToPage = (page: number) => {
+//   if (page >= 1 && page <= totalPages.value) {
+//     currentPage.value = page;
+//     window.scrollTo({ top: 0, behavior: "smooth" });
+//   }
+// };
 
 const searchStore = useSearchStore();
-const { filteredActivities, allActivities } = storeToRefs(searchStore);
+const { filteredActivities } = storeToRefs(searchStore);
 
 // Sätt inga aktiviteter initialt - vänta på AI-genererade eller använd test-aktiviteterna som fallback
 // searchStore.setActivities(activityList); // Göm test-aktiviteterna
@@ -232,7 +233,7 @@ console.log("Waiting for AI activities or using fallback...");
       </div>
 
       <!-- AI-integration: Pagination för att bläddra mellan sidor -->
-      <div v-if="totalPages > 1" class="pagination">
+      <!-- <div v-if="totalPages > 1" class="pagination">
         <button
           class="page-btn"
           @click="goToPage(currentPage - 1)"
@@ -262,6 +263,7 @@ console.log("Waiting for AI activities or using fallback...");
         </button>
       </div>
       <p v-if="filteredActivities.length === 0">Inga aktiviteter hittades</p>
+    </div> --> 
     </div>
 
     <!-- Floating chat button -->
@@ -356,86 +358,11 @@ main {
   border-left: 4px solid #ff4444;
 }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+.carousel-wrapper {
   width: 100%;
-  margin-bottom: 30px;
-}
-
-@media (max-width: 1024px) {
-  .cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .cards {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* AI-integration: Pagination styling */
-.pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
-  margin-top: 40px;
-  padding: 20px 0;
-}
-
-.page-btn {
-  background: var(--main-box-color);
-  color: white;
-  border: 2px solid var(--action-color);
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.page-btn:hover:not(:disabled) {
-  background: var(--action-color);
-  transform: translateY(-2px);
-}
-
-.page-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  border-color: #666;
-}
-
-.page-numbers {
-  display: flex;
-  gap: 8px;
-}
-
-.page-number {
-  background: var(--main-box-color);
-  color: white;
-  border: 2px solid transparent;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.page-number:hover {
-  border-color: var(--action-color);
-  transform: scale(1.1);
-}
-
-.page-number.active {
-  background: var(--action-color);
-  border-color: var(--action-color);
-  transform: scale(1.15);
 }
 
 /* Floating chat button */
