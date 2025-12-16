@@ -1,65 +1,199 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
+import { ref, onMounted, computed } from "vue";
 import activityList from "../data/Activity";
+import type { Activity } from "../data/Activity";
 import star from "../assets/star.svg";
 import starEmpty from "../assets/starEmpty.svg";
-import { ref, onMounted } from "vue";
+import {useSearchStore} from "../store/searchStore";
+import {useCartStore} from "../store/cart";
 
 const route = useRoute();
 const router = useRouter();
+const activityData = ref<Activity | null>(null);
+const searchStore = useSearchStore();
+const cartStore = useCartStore();
 
-const activityData = activityList.find(
-  (activity) => activity.id === route.params.id
-);
+const selectedDate = ref<string>("");
+const players = ref<number>(2);
+const ageRange = ref<string>("");
+
+// AI-integration: Hämta aktivitet från antingen localStorage (AI-genererade) eller mock-data
+onMounted(() => {
+  // 1. Försök läsa från query params först (om någon delat länken)
+  const queryDate = route.query.date as string;
+  const queryPlayers = route.query.players as string;
+  const queryAgeRange = route.query.ageRange as string;
+  
+  if (queryDate || queryPlayers || queryAgeRange) {
+    // Använd query params om de finns
+    selectedDate.value = queryDate || "";
+    players.value = queryPlayers ? parseInt(queryPlayers) : 2;
+    ageRange.value = queryAgeRange || "";
+    
+    // Spara också i localStorage för framtida användning
+    localStorage.setItem("filterData", JSON.stringify({
+      selectedDate: selectedDate.value,
+      players: players.value,
+      ageRange: ageRange.value,
+    }));
+    
+    // Uppdatera searchStore också
+    if (selectedDate.value) searchStore.selectedDate = selectedDate.value;
+    if (players.value) searchStore.players = players.value;
+    if (ageRange.value) searchStore.ageRange = ageRange.value;
+  } else {
+    // Fallback: läs från localStorage om inga query params finns
+    const filterData = localStorage.getItem("filterData");
+    if (filterData) {
+      try {
+        const parsed = JSON.parse(filterData);
+        selectedDate.value = parsed.selectedDate || "";
+        players.value = parsed.players || 2;
+        ageRange.value = parsed.ageRange || "";
+      } catch (err) {
+        console.error("Failed to parse filterData:", err);
+      }
+    }
+  }
+
+  const savedActivities = localStorage.getItem("aiActivities");
+  let allActivities = activityList;
+
+  if (savedActivities) {
+    try {
+      allActivities = JSON.parse(savedActivities);
+    } catch (err) {
+      console.error("Failed to load saved activities:", err);
+    }
+  }
+
+  activityData.value = allActivities.find(
+    (activity) => activity.id === route.params.id
+  ) || null;
+});
 
 function goBack() {
   router.go(-1);
 }
+const hotelAdded = ref<boolean>(false);
+const foodAdded = ref<boolean>(false);
+const vrAdded = ref<boolean>(false);
 
-const selectedDate = ref<string>("");
-const players = ref<number>(2);
+const addOnPrices = {
+  hotel: 899,
+  food: 239,
+  vr: 189,
+};
 
-onMounted(() => {
-  const filterData = localStorage.getItem("filterData");
-  if (filterData) {
-    const parsed = JSON.parse(filterData);
-    selectedDate.value = parsed.selectedDate || "";
-    players.value = parsed.players || 2;
+const totalPrice = computed(() => {
+  let total = 0;
+
+  if (activityData.value?.price && players.value) {
+    total = activityData.value.price * players.value;
+    if (hotelAdded.value) total += addOnPrices.hotel * players.value;
+    if (foodAdded.value) total += addOnPrices.food * players.value;
+    if (vrAdded.value) total += addOnPrices.vr * players.value;
   }
+  return total;
 });
+
+function toggleAddOn(addOn: "hotel" | "food" | "vr") {
+  if (addOn === "hotel") hotelAdded.value = !hotelAdded.value;
+  if (addOn === "food") foodAdded.value = !foodAdded.value;
+  if (addOn === "vr") vrAdded.value = !vrAdded.value;
+}
+
+function saveBooking() {
+  const bookingData = {
+    id: activityData.value?.id || "",
+    imgLink: activityData.value?.imgLink || "",
+    title: activityData.value?.title || "",
+    description: activityData.value?.description || "",
+    difficulty: activityData.value?.difficulty || 0,
+    capacity: players.value,
+    duration: activityData.value?.duration || 0,
+    price: totalPrice.value,
+    ageRange: activityData.value?.ageRange || "vuxen",
+    selectedDate: selectedDate.value,
+    players: players.value,
+    addOns: {
+      hotel: hotelAdded.value,
+      food: foodAdded.value,
+      vr: vrAdded.value,
+    },
+  };
+  const existingBookings = localStorage.getItem("bookingData");
+  const bookings = existingBookings ? JSON.parse(existingBookings) : [];
+
+  bookings.push(bookingData);
+
+  localStorage.setItem("bookingData", JSON.stringify(bookings));
+}
+
+function goToCheckout() {
+  // Spara bokning först
+  saveBooking();
+  
+  // Lägg aktivitet i kundkorgen
+  if (activityData.value) {
+    cartStore.addItem(activityData.value);
+  }
+  
+  // Navigera till checkout med query params
+  const query: Record<string, string | number> = {};
+  
+  if (selectedDate.value) {
+    query.date = selectedDate.value;
+  }
+  if (players.value && players.value > 0) {
+    query.players = players.value;
+  }
+  if (ageRange.value) {
+    query.ageRange = ageRange.value;
+  }
+  if (activityData.value?.id) {
+    query.activityId = activityData.value.id;
+  }
+  
+  router.push({
+    path: "/checkout",
+    query: query,
+  });
+}
 
 const count: number[] = [1, 2, 3, 4, 5];
 </script>
 
 <template>
   <main>
-    <div class="main-content">
-      <div class="activity-container">
-        <div class="title-container">
-          <button class="back-btn" @click="goBack">
-            <svg viewBox="0 0 24 24" fill="none">
-              <g stroke-width="0"></g>
-              <g stroke-linecap="round" stroke-linejoin="round"></g>
-              <g>
-                <path
-                  d="M5 12H19M19 12L13 6M19 12L13 18"
-                  stroke="#ffafc5"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-              </g>
-            </svg>
-          </button>
-          <h1>{{ activityData!.title }}</h1>
-        </div>
+    <div v-if="activityData" class="main-content">
+      <div class="title-container">
+        <button class="back-btn" @click="goBack">
+          <svg viewBox="0 0 24 24" fill="none">
+            <g stroke-width="0"></g>
+            <g stroke-linecap="round" stroke-linejoin="round"></g>
+            <g>
+              <path
+                d="M5 12H19M19 12L13 6M19 12L13 18"
+                stroke="#ffafc5"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </g>
+          </svg>
+        </button>
+        <h1>{{ activityData.title }}</h1>
+      </div>
 
+      <div class="activity-container">
         <div class="activity-content">
           <div class="img-container">
-            <img :src="activityData!.imgLink" alt="" />
+            <img :src="activityData.imgLink" alt="" />
           </div>
           <div class="activity-content-text">
-            <p>{{ activityData!.description }}</p>
+            <p>{{ activityData.description }}</p>
             <p class="duration">
               <svg
                 height="24px"
@@ -71,7 +205,7 @@ const count: number[] = [1, 2, 3, 4, 5];
                   d="M360-840v-80h240v80H360Zm80 440h80v-240h-80v240Zm40 320q-74 0-139.5-28.5T226-186q-49-49-77.5-114.5T120-440q0-74 28.5-139.5T226-694q49-49 114.5-77.5T480-800q62 0 119 20t107 58l56-56 56 56-56 56q38 50 58 107t20 119q0 74-28.5 139.5T734-186q-49 49-114.5 77.5T480-80Zm0-80q116 0 198-82t82-198q0-116-82-198t-198-82q-116 0-198 82t-82 198q0 116 82 198t198 82Zm0-280Z"
                 />
               </svg>
-              {{ activityData!.duration }} min
+              {{ activityData.duration }} min
             </p>
             <h4>Passar till</h4>
             <div class="difficulty">
@@ -89,7 +223,7 @@ const count: number[] = [1, 2, 3, 4, 5];
                   </svg>
                   <h5>Åldersgräns</h5>
                 </div>
-                <p>{{ activityData!.ageRange }}+</p>
+                <p>{{ activityData.ageRange }}</p>
               </div>
               <div class="difficulty-box">
                 <div>
@@ -108,7 +242,8 @@ const count: number[] = [1, 2, 3, 4, 5];
 
                 <img
                   v-for="number in count"
-                  :src="number <= activityData!.difficulty! ? star : starEmpty"
+                  :key="number"
+                  :src="number <= activityData.difficulty ? star : starEmpty"
                   alt=""
                 />
               </div>
@@ -120,7 +255,10 @@ const count: number[] = [1, 2, 3, 4, 5];
       <form class="schedule-container">
         <div class="schedule-top">
           <h2>{{ selectedDate || "Välj ett datum" }}</h2>
-          <p><span class="kronor">100 kr</span> <br />PER PERSON</p>
+          <p>
+            <span class="kronor">{{ activityData.price }} kr</span> <br />PER
+            PERSON
+          </p>
         </div>
         <div class="schedule-times">
           <button class="time-btn">11:00</button>
@@ -133,16 +271,23 @@ const count: number[] = [1, 2, 3, 4, 5];
 
         <div class="add-ons">
           <h3>Tillägg</h3>
+
           <div class="add-on-card">
             <div class="add-on-card-left">
-              <img :src="activityData!.imgLink" />
+              <img :src="activityData.imgLink" />
               <p><span class="kronor">Hotell</span> <br />En natt på Scandic</p>
             </div>
 
             <div class="add-on-card-right">
               <p><span class="kronor">899 kr</span> <br />PER PERSON</p>
-              <button class="time-btn">
+              <button
+                class="time-btn"
+                :class="{ active: hotelAdded }"
+                @click.prevent="toggleAddOn('hotel')"
+                type="button"
+              >
                 <svg
+                  v-if="!hotelAdded"
                   xmlns="http://www.w3.org/2000/svg"
                   height="24px"
                   viewBox="0 -960 960 960"
@@ -153,20 +298,26 @@ const count: number[] = [1, 2, 3, 4, 5];
                     d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
                   />
                 </svg>
+                <span v-else>✓</span>
               </button>
             </div>
           </div>
-
           <div class="add-on-card">
             <div class="add-on-card-left">
-              <img :src="activityData!.imgLink" />
+              <img :src="activityData.imgLink" />
               <p><span class="kronor">Mat</span> <br />Buffé på Vapiano</p>
             </div>
 
             <div class="add-on-card-right">
               <p><span class="kronor">239 kr</span> <br />PER PERSON</p>
-              <button class="time-btn">
+              <button
+                class="time-btn"
+                :class="{ active: foodAdded }"
+                @click.prevent="toggleAddOn('food')"
+                type="button"
+              >
                 <svg
+                  v-if="!foodAdded"
                   xmlns="http://www.w3.org/2000/svg"
                   height="24px"
                   viewBox="0 -960 960 960"
@@ -177,13 +328,14 @@ const count: number[] = [1, 2, 3, 4, 5];
                     d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
                   />
                 </svg>
+                <span v-else>✓</span>
               </button>
             </div>
           </div>
 
           <div class="add-on-card">
             <div class="add-on-card-left">
-              <img :src="activityData!.imgLink" />
+              <img :src="activityData.imgLink" />
               <p>
                 <span class="kronor">VR-upplevelse</span> <br />Lös ett escape
                 room i VR!
@@ -192,8 +344,14 @@ const count: number[] = [1, 2, 3, 4, 5];
 
             <div class="add-on-card-right">
               <p><span class="kronor">189 kr</span> <br />PER PERSON</p>
-              <button class="time-btn">
+              <button
+                class="time-btn"
+                :class="{ active: vrAdded }"
+                @click.prevent="toggleAddOn('vr')"
+                type="button"
+              >
                 <svg
+                  v-if="!vrAdded"
                   xmlns="http://www.w3.org/2000/svg"
                   height="24px"
                   viewBox="0 -960 960 960"
@@ -204,6 +362,7 @@ const count: number[] = [1, 2, 3, 4, 5];
                     d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
                   />
                 </svg>
+                <span v-else>✓</span>
               </button>
             </div>
           </div>
@@ -225,14 +384,14 @@ const count: number[] = [1, 2, 3, 4, 5];
                 />
               </svg>
             </label>
-            <input type="number" :value="players" />
+            <input type="number" v-model.number="players" />
           </div>
           <div class="total-sum-left">
             <p>
               Totalt: <br />
-              <span class="kronor">Siffra här</span>
+              <span class="kronor">{{ totalPrice }} kr</span>
             </p>
-            <button class="time-btn">
+            <button @click="goToCheckout()" class="time-btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="40px"
@@ -248,6 +407,9 @@ const count: number[] = [1, 2, 3, 4, 5];
           </div>
         </div>
       </form>
+    </div>
+    <div v-else>
+      <p>Laddar...</p>
     </div>
   </main>
 </template>
@@ -274,14 +436,6 @@ const count: number[] = [1, 2, 3, 4, 5];
   text-decoration: none;
   padding: 0;
   cursor: pointer;
-
-  /* color: var(--secondary-action-color); */
-  /* font-weight: bold; */
-  /* font-size: 24px; */
-  /* display: flex;
-  align-items: center; */
-  /* margin: 12px 0px; */
-
   width: 46px;
   transform: rotate(180deg);
 }
@@ -424,10 +578,10 @@ const count: number[] = [1, 2, 3, 4, 5];
   background-color: var(--main-bg-color);
   color: var(--secondary-action-color);
   border: solid 2px var(--main-bg-color);
-  padding: 12px 36px;
+  padding: 10px 20px;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 21px;
+  font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -445,6 +599,16 @@ const count: number[] = [1, 2, 3, 4, 5];
     fill: var(--action-color);
     transition: 0.1s;
   }
+}
+
+.time-btn.active {
+  background-color: var(--action-color);
+  border-color: var(--action-color);
+  color: var(--main-bg-color);
+}
+
+.time-btn.active span {
+  font-size: 20px;
 }
 
 .add-ons {

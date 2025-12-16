@@ -17,6 +17,8 @@
         </svg>
       </section>
       <nav>
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink :to="{ name: 'story' }">Story Generator</RouterLink>
         <button class="cart-checkout" @click="openCart">
           <svg
             xmlns="http://www.w3.org/2000/svg"
