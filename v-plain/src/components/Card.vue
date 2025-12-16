@@ -128,7 +128,8 @@ const saveFilter = () => {
   display: flex;
   flex-direction: column;
   width: 360px;
-  height: fit-content;
+  /* height: fit-content; */
+  min-height: 400px;
 }
 
 .card-top {
@@ -159,7 +160,6 @@ const saveFilter = () => {
   top: 0;
   left: 0;
   display: flex;
-  gap: 4px;
   gap: 6px;
   padding: 12px 16px;
   border-radius: 8px;
@@ -167,8 +167,6 @@ const saveFilter = () => {
 }
 
 .card-difficulty img {
-  width: 21px;
-  height: 21px;
   width: 24px;
   height: 24px;
 }
@@ -182,7 +180,6 @@ const saveFilter = () => {
   color: var(--text-color);
   padding: 8px 12px;
   border-radius: 8px;
-  color: var(--text-color);
 }
 
 .card-info p {
@@ -195,6 +192,7 @@ const saveFilter = () => {
 
 .card-bottom {
   padding: 21px 28px;
+  height: auto;
   z-index: 3;
   flex: 1;
   display: flex;
@@ -223,27 +221,6 @@ const saveFilter = () => {
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  font-size: 16px;
-}
-
-.card-bottom {
-  padding: 21px 36px;
-  height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.card-title {
-  font-size: 26px;
-  margin-bottom: 8px;
-}
-
-.card-description {
-  font-size: 17px;
-  color: var(--text-color);
-  margin-bottom: 16px;
-  line-height: 1.4;
 }
 
 .card-footer {
@@ -275,10 +252,6 @@ const saveFilter = () => {
 
 .bookBtn:hover svg path {
   stroke: var(--action-color);
-
-  svg path {
-    stroke: var(--action-color);
-  }
 }
 
 .bookBtn svg {
@@ -300,11 +273,6 @@ const saveFilter = () => {
   font-weight: 600;
   margin: 0;
   font-size: 26px;
-}
-
-.card-price p:last-child {
-  font-size: 12px;
-  font-size: 28px;
 }
 
 .card-price p:last-child {
