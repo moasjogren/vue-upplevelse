@@ -21,6 +21,10 @@ const cardProps = defineProps({
 
 const count: number[] = [1, 2, 3, 4, 5];
 
+const handleImageError = (e: Event) => {
+  const target = e.target as HTMLImageElement;
+  target.src =
+    "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=800&q=80";
 const saveFilter = () => {
   const filterData = {
     selectedDate: selectedDate.value,
@@ -34,6 +38,20 @@ const saveFilter = () => {
   <div class="card-container">
     <div class="card-top">
       <div class="overlay"></div>
+      <img
+        :key="imgLink"
+        :src="
+          imgLink ||
+          'https://images.unsplash.com/photo-1528892677828-8862216f3665?w=800&q=80'
+        "
+        alt=""
+        @error="handleImageError"
+      />
+      <div class="card-difficulty">
+        <img
+          v-for="(_n, index) in count"
+          :key="index"
+          :src="index + 1 <= (difficulty || 0) ? star : starEmpty"
       <img :src="imgLink" alt="" />
       <div class="card-difficulty">
         <img
@@ -72,6 +90,10 @@ const saveFilter = () => {
       </div>
     </div>
     <div class="card-bottom">
+      <h3 class="card-title">{{ title }}</h3>
+      <p class="card-description">{{ description }}</p>
+      <div class="card-footer">
+        <RouterLink class="bookBtn" :to="`/activity/${id}`"
       <article>
         <h3 class="card-title">{{ title }}</h3>
         <p class="card-description">{{ description }}</p>
@@ -112,6 +134,10 @@ const saveFilter = () => {
   background-color: var(--main-box-color);
   border-radius: 8px;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   width: 360px;
   height: fit-content;
 }
@@ -144,6 +170,7 @@ const saveFilter = () => {
   top: 0;
   left: 0;
   display: flex;
+  gap: 4px;
   gap: 6px;
   padding: 12px 16px;
   border-radius: 8px;
@@ -151,6 +178,8 @@ const saveFilter = () => {
 }
 
 .card-difficulty img {
+  width: 21px;
+  height: 21px;
   width: 24px;
   height: 24px;
 }
@@ -172,6 +201,39 @@ const saveFilter = () => {
   align-items: center;
   justify-content: end;
   gap: 8px;
+  font-size: 14px;
+}
+
+.card-bottom {
+  padding: 21px 28px;
+  z-index: 3;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 24px;
+  margin-bottom: 8px;
+  min-height: 60px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-description {
+  font-size: 16px;
+  color: var(--text-color);
+  margin-bottom: 16px;
+  line-height: 1.4;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   font-size: 16px;
 }
 
@@ -220,6 +282,10 @@ const saveFilter = () => {
 .bookBtn:hover {
   border: solid 2px var(--action-color);
   color: var(--action-color);
+}
+
+.bookBtn:hover svg path {
+  stroke: var(--action-color);
 
   svg path {
     stroke: var(--action-color);
@@ -244,6 +310,11 @@ const saveFilter = () => {
 .card-price p {
   font-weight: 600;
   margin: 0;
+  font-size: 26px;
+}
+
+.card-price p:last-child {
+  font-size: 12px;
   font-size: 28px;
 }
 

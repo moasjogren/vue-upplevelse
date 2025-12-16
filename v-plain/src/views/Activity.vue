@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
 import activityList from "../data/Activity";
 import star from "../assets/star.svg";
 import starEmpty from "../assets/starEmpty.svg";
@@ -7,10 +8,25 @@ import { ref, onMounted } from "vue";
 
 const route = useRoute();
 const router = useRouter();
+const activityData = ref(null);
 
-const activityData = activityList.find(
-  (activity) => activity.id === route.params.id
-);
+// AI-integration: Hämta aktivitet från antingen localStorage (AI-genererade) eller mock-data
+onMounted(() => {
+  const savedActivities = localStorage.getItem("aiActivities");
+  let allActivities = activityList;
+
+  if (savedActivities) {
+    try {
+      allActivities = JSON.parse(savedActivities);
+    } catch (err) {
+      console.error("Failed to load saved activities:", err);
+    }
+  }
+
+  activityData.value = allActivities.find(
+    (activity) => activity.id === route.params.id
+  );
+});
 
 function goBack() {
   router.go(-1);
@@ -34,6 +50,10 @@ const count: number[] = [1, 2, 3, 4, 5];
 <template>
   <main>
     <div class="main-content">
+      <button class="back-btn" @click="goBack">&lt; Tillbaka</button>
+
+      <div v-if="activityData" class="activity-container">
+        <h1>{{ activityData.title }}</h1>
       <div class="activity-container">
         <div class="title-container">
           <button class="back-btn" @click="goBack">
@@ -127,6 +147,10 @@ const count: number[] = [1, 2, 3, 4, 5];
         </div>
       </div>
 
+      <div v-else class="not-found">
+        <h2>Aktiviteten hittades inte</h2>
+        <p>Det verkar som att denna aktivitet inte finns.</p>
+      </div>
       <form class="schedule-container">
         <div class="schedule-top">
           <h2>{{ selectedDate || "Välj ett datum" }}</h2>

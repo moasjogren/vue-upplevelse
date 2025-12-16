@@ -2,6 +2,7 @@
   <header>
     <div class="header-content">
       <section class="logo">
+        <h1>‘SCAPE</h1>
         <RouterLink to="/">
           <h1 class="header-logo">‘SCAPE</h1>
         </RouterLink>
@@ -17,6 +18,9 @@
         </svg>
       </section>
       <nav>
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink :to="{ name: 'about' }">About</RouterLink>
+        <RouterLink :to="{ name: 'story' }">Story Generator</RouterLink>
         <button class="cart-checkout" @click="openCart">
           <svg
             xmlns="http://www.w3.org/2000/svg"
