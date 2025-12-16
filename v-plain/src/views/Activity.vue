@@ -5,13 +5,58 @@ import activityList from "../data/Activity";
 import type { Activity } from "../data/Activity";
 import star from "../assets/star.svg";
 import starEmpty from "../assets/starEmpty.svg";
+import {useSearchStore} from "../store/searchStore";
+import {useCartStore} from "../store/cart";
 
 const route = useRoute();
 const router = useRouter();
 const activityData = ref<Activity | null>(null);
+const searchStore = useSearchStore();
+const cartStore = useCartStore();
+
+const selectedDate = ref<string>("");
+const players = ref<number>(2);
+const ageRange = ref<string>("");
 
 // AI-integration: Hämta aktivitet från antingen localStorage (AI-genererade) eller mock-data
 onMounted(() => {
+  // 1. Försök läsa från query params först (om någon delat länken)
+  const queryDate = route.query.date as string;
+  const queryPlayers = route.query.players as string;
+  const queryAgeRange = route.query.ageRange as string;
+  
+  if (queryDate || queryPlayers || queryAgeRange) {
+    // Använd query params om de finns
+    selectedDate.value = queryDate || "";
+    players.value = queryPlayers ? parseInt(queryPlayers) : 2;
+    ageRange.value = queryAgeRange || "";
+    
+    // Spara också i localStorage för framtida användning
+    localStorage.setItem("filterData", JSON.stringify({
+      selectedDate: selectedDate.value,
+      players: players.value,
+      ageRange: ageRange.value,
+    }));
+    
+    // Uppdatera searchStore också
+    if (selectedDate.value) searchStore.selectedDate = selectedDate.value;
+    if (players.value) searchStore.players = players.value;
+    if (ageRange.value) searchStore.ageRange = ageRange.value;
+  } else {
+    // Fallback: läs från localStorage om inga query params finns
+    const filterData = localStorage.getItem("filterData");
+    if (filterData) {
+      try {
+        const parsed = JSON.parse(filterData);
+        selectedDate.value = parsed.selectedDate || "";
+        players.value = parsed.players || 2;
+        ageRange.value = parsed.ageRange || "";
+      } catch (err) {
+        console.error("Failed to parse filterData:", err);
+      }
+    }
+  }
+
   const savedActivities = localStorage.getItem("aiActivities");
   let allActivities = activityList;
 
@@ -23,23 +68,14 @@ onMounted(() => {
     }
   }
 
-  activityData.value =
-    allActivities.find((activity) => activity.id === route.params.id) || null;
-
-  const filterData = localStorage.getItem("filterData");
-  if (filterData) {
-    const parsed = JSON.parse(filterData);
-    selectedDate.value = parsed.selectedDate || "";
-    players.value = parsed.players || 2;
-  }
+  activityData.value = allActivities.find(
+    (activity) => activity.id === route.params.id
+  ) || null;
 });
 
 function goBack() {
   router.go(-1);
 }
-
-const selectedDate = ref<string>("");
-const players = ref<number>(2);
 const hotelAdded = ref<boolean>(false);
 const foodAdded = ref<boolean>(false);
 const vrAdded = ref<boolean>(false);
@@ -93,6 +129,37 @@ function saveBooking() {
   bookings.push(bookingData);
 
   localStorage.setItem("bookingData", JSON.stringify(bookings));
+}
+
+function goToCheckout() {
+  // Spara bokning först
+  saveBooking();
+  
+  // Lägg aktivitet i kundkorgen
+  if (activityData.value) {
+    cartStore.addItem(activityData.value);
+  }
+  
+  // Navigera till checkout med query params
+  const query: Record<string, string | number> = {};
+  
+  if (selectedDate.value) {
+    query.date = selectedDate.value;
+  }
+  if (players.value && players.value > 0) {
+    query.players = players.value;
+  }
+  if (ageRange.value) {
+    query.ageRange = ageRange.value;
+  }
+  if (activityData.value?.id) {
+    query.activityId = activityData.value.id;
+  }
+  
+  router.push({
+    path: "/checkout",
+    query: query,
+  });
 }
 
 const count: number[] = [1, 2, 3, 4, 5];
@@ -324,7 +391,7 @@ const count: number[] = [1, 2, 3, 4, 5];
               Totalt: <br />
               <span class="kronor">{{ totalPrice }} kr</span>
             </p>
-            <button @click="saveBooking()" class="time-btn">
+            <button @click="goToCheckout()" class="time-btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="40px"

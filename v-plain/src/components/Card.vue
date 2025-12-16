@@ -3,9 +3,11 @@ import star from "../assets/star.svg";
 import starEmpty from "../assets/starEmpty.svg";
 import { storeToRefs } from "pinia";
 import { useSearchStore } from "../store/searchStore";
+import {useRouter} from "vue-router";
 
+const router = useRouter();
 const searchStore = useSearchStore();
-const { difficulty, selectedDate, players } = storeToRefs(searchStore);
+const { selectedDate, players, ageRange } = storeToRefs(searchStore);
 
 const cardProps = defineProps({
   id: String,
@@ -21,19 +23,39 @@ const cardProps = defineProps({
 
 const count: number[] = [1, 2, 3, 4, 5];
 
+const saveFilterAndNavigate = () => {
+  const filterData = {
+    selectedDate: selectedDate.value,
+    players: players.value,
+    ageRange: ageRange.value
+  };
+  localStorage.setItem("filterData", JSON.stringify(filterData));
+
+  const query: Record<string, string | number> = {};
+
+  if(selectedDate.value){
+    query.date = selectedDate.value;
+  }
+
+  if (players.value && players.value > 0) {
+    query.players = players.value;
+  }
+  if (ageRange.value) {
+    query.ageRange = ageRange.value;
+  }
+  
+  router.push({
+    path: `/activity/${cardProps.id}`,
+    query: query,
+  });
+}
+
 const handleImageError = (e: Event) => {
   const target = e.target as HTMLImageElement;
   target.src =
     "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=800&q=80";
 };
 
-const saveFilter = () => {
-  const filterData = {
-    selectedDate: selectedDate.value,
-    players: players.value,
-  };
-  localStorage.setItem("filterData", JSON.stringify(filterData));
-};
 </script>
 
 <template>
@@ -91,7 +113,7 @@ const saveFilter = () => {
       <p class="card-description">{{ cardProps.description }}</p>
       <div class="card-footer">
         <RouterLink
-          @click="saveFilter()"
+          @click.prevent="saveFilterAndNavigate()"
           class="bookBtn"
           :to="`/activity/${cardProps.id}`"
           >Läs mer
