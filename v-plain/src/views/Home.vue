@@ -1,31 +1,41 @@
 <script setup lang="ts">
-  import activityList from "../data/Activity";
-  import Card from "../components/Card.vue";
-  import { onMounted } from 'vue'
-  import { storeToRefs } from 'pinia'
-   import SearchForm from "../components/SearchForm.vue"
-  import { useSearchStore } from '../store/searchStore'
-  
-  const searchStore = useSearchStore()
-  const {filteredActivities} = storeToRefs(searchStore)
-   onMounted(() => {
-    searchStore.setActivities(activityList)
-   });
-  import Hero from "../components/HeroBanner.vue"
+import activityList from "../data/Activity";
+import Card from "../components/Card.vue";
+import { onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import SearchForm from "../components/SearchForm.vue";
+import { useSearchStore } from "../store/searchStore";
+
+const searchStore = useSearchStore();
+const { filteredActivities } = storeToRefs(searchStore);
+onMounted(() => {
+  searchStore.setActivities(activityList);
+});
+import Hero from "../components/HeroBanner.vue";
 </script>
 
 <template>
-
   <main>
-    <Hero/>
+    <Hero />
     <div class="main-content">
-      <h1>Home</h1>
       <SearchForm />
       <div class="hero-action-symbol">
-            <img src="../assets/arrowstar.svg" alt="star" class="star">
-            <svg viewBox="0 0 24 24" fill="none"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round"></g><g><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="#F9EDEB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+        <img src="../assets/arrowstar.svg" alt="star" class="star" />
+        <svg viewBox="0 0 24 24" fill="none">
+          <g stroke-width="0"></g>
+          <g stroke-linecap="round" stroke-linejoin="round"></g>
+          <g>
+            <path
+              d="M5 12H19M19 12L13 6M19 12L13 18"
+              stroke="#F9EDEB"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </g>
+        </svg>
       </div>
-      
+
       <div class="cards">
         <Card
           v-for="activity in filteredActivities"
@@ -36,12 +46,12 @@
           :description="activity.description"
           :difficulty="activity.difficulty"
           :capacity="activity.capacity"
-          :age="activity.age"
+          :ageRange="activity.ageRange"
           :duration="activity.duration"
           :price="activity.price"
         />
       </div>
-       <p v-if="filteredActivities.length === 0">Inga aktiviteter hittades</p>
+      <p v-if="filteredActivities.length === 0">Inga aktiviteter hittades</p>
     </div>
   </main>
 </template>
@@ -77,14 +87,14 @@ main {
 .hero-action-symbol svg {
   width: 76px;
   position: absolute;
-  transform: rotate(90deg) translate(38%, 132%);;
-  
+  transform: rotate(90deg) translate(38%, 132%);
+
   z-index: 6;
   top: 0;
 }
 
 .hero-action-symbol svg path {
-  stroke: var(--action-color)
+  stroke: var(--action-color);
 }
 
 .cards {
