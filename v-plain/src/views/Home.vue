@@ -2,12 +2,16 @@
 import { ref, computed, onMounted } from "vue";
 import Card from "../components/Card.vue";
 import ChatBot from "../components/ChatBot.vue";
+import Hero from "../components/HeroBanner.vue";
+import SearchForm from "../components/SearchForm.vue";
 // AI-integration: Importera vår AI-service för att generera aktiviteter
 import { generateActivities } from "../services/aiService";
-import type { Activity } from "../services/aiService";
+import type { Activity } from "../data/Activity";
+import activityList from "../data/Activity";
+import { storeToRefs } from "pinia";
+import { useSearchStore } from "../store/searchStore";
 
 // AI-integration: State för aktiviteter, laddning och felhantering
-const allActivities = ref<Activity[]>([]);
 const loading = ref(false);
 const error = ref("");
 const currentPage = ref(1);
@@ -17,17 +21,59 @@ const showChatBot = ref(false);
 
 // AI-integration: Ladda sparade AI-aktiviteter från localStorage, eller generera nya vid första besöket
 onMounted(async () => {
+  // Kombinera befintliga aktiviteter med AI-genererade
   const savedActivities = localStorage.getItem("aiActivities");
+  let aiGeneratedActivities: Activity[] = [];
+  
   if (savedActivities) {
     try {
-      allActivities.value = JSON.parse(savedActivities);
+      aiGeneratedActivities = JSON.parse(savedActivities);
+      console.log("Loaded saved AI activities:", aiGeneratedActivities);
+      console.log("Number of saved activities:", aiGeneratedActivities?.length || 0);
+      
+      // Validera att sparade aktiviteter har rätt struktur
+      if (!Array.isArray(aiGeneratedActivities) || aiGeneratedActivities.length === 0) {
+        console.log("Saved activities invalid or empty, generating new ones...");
+        localStorage.removeItem("aiActivities"); // Rensa felaktiga data
+        await handleGenerateActivities();
+        return;
+      }
+      
+      // Kontrollera att aktiviteterna har rätt struktur
+      const validActivities = aiGeneratedActivities.filter(activity => 
+        activity.id && activity.title && activity.capacity !== undefined
+      );
+      
+      if (validActivities.length === 0) {
+        console.log("No valid activities found, generating new ones...");
+        localStorage.removeItem("aiActivities");
+        await handleGenerateActivities();
+        return;
+      }
+      
+      // Använd bara AI-genererade aktiviteter (göm test-aktiviteterna)
+      const combinedActivities = validActivities;
+      console.log("Using saved AI activities:", {
+        ai: validActivities.length,
+        total: combinedActivities.length
+      });
+      
+      searchStore.setActivities(combinedActivities);
+      searchStore.clearFilters();
+      
+      console.log("After setting saved activities:", {
+        allActivities: searchStore.allActivities.length,
+        filteredActivities: searchStore.filteredActivities.length
+      });
     } catch (err) {
       console.error("Failed to load saved activities:", err);
+      localStorage.removeItem("aiActivities"); // Rensa felaktiga data
       // Om laddning misslyckas, generera nya
       await handleGenerateActivities();
     }
   } else {
     // Första besöket - generera AI-rum automatiskt
+    console.log("No saved activities, generating new ones...");
     await handleGenerateActivities();
   }
 });
@@ -36,12 +82,12 @@ onMounted(async () => {
 const paginatedActivities = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return allActivities.value.slice(start, end);
+  return filteredActivities.value.slice(start, end);
 });
 
 // AI-integration: Beräkna totalt antal sidor
 const totalPages = computed(() => {
-  return Math.ceil(allActivities.value.length / itemsPerPage);
+  return Math.ceil(filteredActivities.value.length / itemsPerPage);
 });
 
 // AI-integration: Funktion som anropar backend för att generera nya aktiviteter
@@ -50,22 +96,43 @@ const handleGenerateActivities = async () => {
   error.value = "";
   currentPage.value = 1;
   try {
-    // Generera 12 aktiviteter (2 sidor × 6 per sida)
+    console.log("Starting AI generation...");
+    // Generera 12 AI-aktiviteter (ersätter test-aktiviteterna)
     const newActivities = await generateActivities(12);
+    console.log("AI generated activities received:", newActivities);
+    console.log("Number of AI activities:", newActivities?.length || 0);
 
-    // Rensa gamla aktiviteter först
-    allActivities.value = [];
-    // Vänta en tick för att Vue ska upptäcka ändringen
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    // Sätt nya aktiviteter
-    allActivities.value = newActivities;
-    // Spara i localStorage så de finns kvar efter sidladdning
+    if (!newActivities || newActivities.length === 0) {
+      throw new Error("No activities generated");
+    }
+
+    // Spara AI-genererade aktiviteter i localStorage
     localStorage.setItem("aiActivities", JSON.stringify(newActivities));
+    
+    // Använd bara AI-genererade aktiviteter (göm test-aktiviteterna)
+    const combinedActivities = newActivities;
+    console.log("Using AI-generated activities:", {
+      ai: newActivities.length,
+      total: combinedActivities.length
+    });
+    
+    searchStore.setActivities(combinedActivities);
+    // Se till att filter inte är aktiva från början
+    searchStore.clearFilters();
+    
+    console.log("After setting activities:", {
+      allActivities: searchStore.allActivities.length,
+      filteredActivities: searchStore.filteredActivities.length
+    });
+    
     // Tvinga re-render av cards
     componentKey.value++;
   } catch (err) {
     error.value = "Kunde inte generera aktiviteter. Försök igen senare.";
     console.error("Failed to generate activities:", err);
+    // Om AI-generering misslyckas, använd test-aktiviteterna som fallback
+    searchStore.setActivities(activityList);
+    searchStore.clearFilters();
   } finally {
     loading.value = false;
   }
@@ -78,19 +145,14 @@ const goToPage = (page: number) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 };
-import activityList from "../data/Activity";
-import Card from "../components/Card.vue";
-import { onMounted } from "vue";
-import { storeToRefs } from "pinia";
-import SearchForm from "../components/SearchForm.vue";
-import { useSearchStore } from "../store/searchStore";
 
 const searchStore = useSearchStore();
-const { filteredActivities } = storeToRefs(searchStore);
-onMounted(() => {
-  searchStore.setActivities(activityList);
-});
-import Hero from "../components/HeroBanner.vue";
+const { filteredActivities, allActivities } = storeToRefs(searchStore);
+
+// Sätt inga aktiviteter initialt - vänta på AI-genererade eller använd test-aktiviteterna som fallback
+// searchStore.setActivities(activityList); // Göm test-aktiviteterna
+searchStore.clearFilters();
+console.log("Waiting for AI activities or using fallback...");
 </script>
 
 <template>
@@ -112,11 +174,8 @@ import Hero from "../components/HeroBanner.vue";
       <!-- AI-integration: Visa felmeddelande om något går fel -->
       <div v-if="error" class="error">{{ error }}</div>
 
-      <div class="cards" :key="componentKey">
-        <Card
-          v-for="activity in paginatedActivities"
-          :key="`${componentKey}-${activity.id}`"
       <SearchForm />
+      
       <div class="hero-action-symbol">
         <img src="../assets/arrowstar.svg" alt="star" class="star" />
         <svg viewBox="0 0 24 24" fill="none">
@@ -134,7 +193,11 @@ import Hero from "../components/HeroBanner.vue";
         </svg>
       </div>
 
-      <div class="cards">
+      <div v-if="loading" class="loading-state">
+        <p>🔄 Genererar AI-aktiviteter... Detta kan ta upp till en minut.</p>
+      </div>
+      
+      <div class="cards" v-if="filteredActivities.length > 0 && !loading">
         <Card
           v-for="activity in filteredActivities"
           :key="activity.id"
@@ -148,6 +211,10 @@ import Hero from "../components/HeroBanner.vue";
           :duration="activity.duration"
           :price="activity.price"
         />
+      </div>
+      
+      <div v-else-if="!loading" class="loading-state">
+        <p>Inga aktiviteter hittades. <button @click="handleGenerateActivities">Generera aktiviteter</button></p>
       </div>
 
       <!-- AI-integration: Pagination för att bläddra mellan sidor -->

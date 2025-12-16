@@ -1,6 +1,6 @@
 // Importerar Express och dess typer för att skapa API endpoints
 import express from "express";
-// Importerar AI-funktionerna från groqService
+// Importerar AI-funktionerna från groqService (använder nu Gemini)
 import {
   generateActivities,
   recommendActivity,
@@ -21,24 +21,32 @@ const router = express.Router();
 router.post(
   "/generate-activities",
   async (req: express.Request, res: express.Response) => {
+    console.log(`[API] ⚡ POST /generate-activities received`);
+    console.log(`[API] Request body:`, JSON.stringify(req.body));
     try {
       // Hämtar antal från request body, default till 5 om inget anges
       const { count = 5 } = req.body;
+      console.log(`[API] 📝 Generating ${count} activities...`);
 
       // Anropar AI-funktionen för att generera aktiviteter
+      console.log(`[API] 🤖 Calling generateActivities(${count})...`);
       const activities = await generateActivities(count);
+      console.log(`[API] ✅ Generated ${activities.length} activities successfully`);
 
       // Skickar tillbaka success response med data
       res.json({
         success: true,
         activities,
       });
-    } catch (error) {
+    } catch (error: any) {
       // Om något går fel, logga error och skicka error response
-      console.error("Error generating activities:", error);
+      console.error("[API] ❌ ERROR generating activities:");
+      console.error("[API] Error message:", error.message);
+      console.error("[API] Error stack:", error.stack);
+      console.error("[API] Full error:", error);
       res.status(500).json({
         success: false,
-        error: "Failed to generate activities",
+        error: error.message || "Failed to generate activities",
       });
     }
   }

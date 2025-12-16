@@ -2,13 +2,13 @@
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import activityList from "../data/Activity";
+import type { Activity } from "../data/Activity";
 import star from "../assets/star.svg";
 import starEmpty from "../assets/starEmpty.svg";
-import { ref, onMounted } from "vue";
 
 const route = useRoute();
 const router = useRouter();
-const activityData = ref(null);
+const activityData = ref<Activity | null>(null);
 
 // AI-integration: Hämta aktivitet från antingen localStorage (AI-genererade) eller mock-data
 onMounted(() => {
@@ -25,7 +25,7 @@ onMounted(() => {
 
   activityData.value = allActivities.find(
     (activity) => activity.id === route.params.id
-  );
+  ) || null;
 });
 
 function goBack() {
@@ -50,11 +50,7 @@ const count: number[] = [1, 2, 3, 4, 5];
 <template>
   <main>
     <div class="main-content">
-      <button class="back-btn" @click="goBack">&lt; Tillbaka</button>
-
       <div v-if="activityData" class="activity-container">
-        <h1>{{ activityData.title }}</h1>
-      <div class="activity-container">
         <div class="title-container">
           <button class="back-btn" @click="goBack">
             <svg viewBox="0 0 24 24" fill="none">
@@ -145,13 +141,8 @@ const count: number[] = [1, 2, 3, 4, 5];
             </div>
           </div>
         </div>
-      </div>
 
-      <div v-else class="not-found">
-        <h2>Aktiviteten hittades inte</h2>
-        <p>Det verkar som att denna aktivitet inte finns.</p>
-      </div>
-      <form class="schedule-container">
+        <form class="schedule-container" v-if="activityData">
         <div class="schedule-top">
           <h2>{{ selectedDate || "Välj ett datum" }}</h2>
           <p><span class="kronor">100 kr</span> <br />PER PERSON</p>
@@ -281,7 +272,13 @@ const count: number[] = [1, 2, 3, 4, 5];
             </button>
           </div>
         </div>
-      </form>
+        </form>
+      </div>
+
+      <div v-else class="not-found">
+        <h2>Aktiviteten hittades inte</h2>
+        <p>Det verkar som att denna aktivitet inte finns.</p>
+      </div>
     </div>
   </main>
 </template>
