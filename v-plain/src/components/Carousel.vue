@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref } from 'vue';
+    import { ref, computed } from 'vue';
     import Card from './Card.vue';
 
   // Definiera props för Carousel-komponenten
@@ -8,7 +8,17 @@
 }>();
     // Hanterar akutuell slide index
     const currentIndex = ref(0);
-    const cardsPerView = ref(3);
+    // Dynamiskt antal kort per vy baserat på totalt antal kort
+    const cardsPerView = computed(() => {
+      if (props.cards.length <= 2) return props.cards.length;
+      if (props.cards.length <= 4) return 2;
+      return 3;
+    });
+    
+    // Beräkna om vi ska centrera (när det är färre kort än cardsPerView)
+    const shouldCenter = computed(() => {
+      return props.cards.length < cardsPerView.value;
+    });
 
     //Funktioner för att navigera i karusellen 
     const next = () =>{
@@ -31,15 +41,33 @@
 
 <template>
   <div class="carousel-container">
-    <button class="carousel-btn prev" @click="prev" :disabled="currentIndex === 0">
+    <button 
+      v-if="cards.length > cardsPerView"
+      class="carousel-btn prev" 
+      @click="prev" 
+      :disabled="currentIndex === 0"
+    >
       <svg viewBox="0 0 24 24" fill="none">
         <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
     
     <div class="carousel-wrapper">
-      <div class="carousel-track" :style="{ transform: `translateX(-${currentIndex * (100 / cardsPerView)}%)` }">
-        <div v-for="card in cards" :key="card.id" class="carousel-item">
+      <div 
+        class="carousel-track" 
+        :class="{ 'centered': shouldCenter }"
+        :style="{ 
+          transform: shouldCenter ? 'none' : `translateX(-${currentIndex * (100 / cardsPerView)}%)`
+        }"
+      >
+        <div 
+          v-for="card in cards" 
+          :key="card.id" 
+          class="carousel-item"
+          :style="{ 
+            flexBasis: `calc((100% - ${(cardsPerView - 1) * 24}px) / ${cardsPerView})`
+          }"
+        >
           <Card 
             :id="card.id"
             :imgLink="card.imgLink"
@@ -55,15 +83,20 @@
       </div>
     </div>
 
-    <button class="carousel-btn next" @click="next" :disabled="currentIndex >= cards.length - cardsPerView">
+    <button 
+      v-if="cards.length > cardsPerView"
+      class="carousel-btn next" 
+      @click="next" 
+      :disabled="currentIndex >= cards.length - cardsPerView"
+    >
      <svg viewBox="0 0 24 24" fill="none">
         <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
 
-    <div class="carousel-dots">
+    <div class="carousel-dots" v-if="cards.length > cardsPerView">
       <button 
-        v-for="(_, index) in cards.length - cardsPerView + 1" 
+        v-for="(_, index) in Math.max(1, cards.length - cardsPerView + 1)" 
         :key="index"
         @click="goToSlide(index)"
         :class="{ active: currentIndex === index }"
@@ -78,22 +111,35 @@
   position: relative;
   width: 100%;
   padding: 40px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .carousel-wrapper {
   overflow: hidden;
   width: 100%;
+  max-width: 1200px; /* Begränsa maxbredd för bättre centrering */
+  margin: 0 auto;
 }
 
 .carousel-track {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   transition: transform 0.5s ease;
+  justify-content: flex-start;
+}
+
+.carousel-track.centered {
+  justify-content: center;
 }
 
 .carousel-item {
-  flex: 0 0 calc(33.333% - 14px); /* 3 kort per view */
+  flex: 0 0 auto; /* Bredd sätts dynamiskt via inline style */
   min-width: 0;
+  max-width: 100%;
+  display: flex;
+  justify-content: center; /* Centrera kortet inuti item */
 }
 
 .carousel-btn {
@@ -125,11 +171,25 @@
 }
 
 .carousel-btn.prev {
-  left: 0;
+  left: 10px;
 }
 
 .carousel-btn.next {
-  right: 0;
+  right: 10px;
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    padding: 20px 40px;
+  }
+  
+  .carousel-btn.prev {
+    left: 0;
+  }
+  
+  .carousel-btn.next {
+    right: 0;
+  }
 }
 
 .carousel-btn svg {
