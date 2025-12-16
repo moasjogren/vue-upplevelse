@@ -13,16 +13,16 @@ dotenv.config();
 // Skapar Express app-instansen
 const app = express();
 
-// Hämtar port från miljövariabel, default till 3001
-const PORT = process.env.PORT || 3001;
+// Hämtar port från miljövariabel, default till 3002 (3001 kan vara upptagen)
+const PORT = process.env.PORT || 3002;
 
 // ========== MIDDLEWARE ==========
 
 // CORS - Tillåter frontend (Vue) att anropa backend
-// Origin sätts till frontend URL (localhost:5173 är Vite default)
+// Tillåter alla origins under utveckling för att undvika CORS-problem
 app.use(
   cors({
-    origin: "http://localhost:5173", // Vue dev server
+    origin: true, // Tillåt alla origins under utveckling
     credentials: true,
   })
 );
@@ -32,7 +32,11 @@ app.use(express.json());
 
 // Logger middleware - Loggar alla incoming requests
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
+  console.log(`[${new Date().toISOString()}] 📥 ${req.method} ${req.path}`);
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log(`  📦 Body:`, JSON.stringify(req.body));
+  }
+  console.log(`  🌐 Origin:`, req.headers.origin || 'N/A');
   next();
 });
 
@@ -40,6 +44,7 @@ app.use((req, res, next) => {
 
 // Health check endpoint - För att testa att servern körs
 app.get("/", (req, res) => {
+  console.log(`[API] ✅ Health check requested`);
   res.json({
     message: "AI Backend Server is running! 🚀",
     endpoints: [
@@ -48,6 +53,16 @@ app.get("/", (req, res) => {
       "POST /api/chat",
       "POST /api/generate-story",
     ],
+  });
+});
+
+// Ytterligare health check för API
+app.get("/api/health", (req, res) => {
+  console.log(`[API] ✅ API health check requested`);
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    geminiApiKey: !!process.env.GEMINI_API_KEY,
   });
 });
 
@@ -87,5 +102,5 @@ app.use(
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📡 API available at http://localhost:${PORT}/api`);
-  console.log(`🤖 Groq AI connected`);
+  console.log(`🤖 Google Gemini AI connected`);
 });

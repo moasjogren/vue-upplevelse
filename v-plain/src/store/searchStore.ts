@@ -21,7 +21,7 @@ export const useSearchStore = defineStore("search", () => {
   const maxDuration = ref<number | null>(null);
   const ageRange = ref<string | null>(null);
   const selectedDate = ref<string>("");
-  const players = ref<number>(2);
+  const players = ref<number>(0);
 
   const activeDifficulty = ref<number | null>(null);
   const activeAgeRange = ref<string | null>(null);
@@ -29,7 +29,7 @@ export const useSearchStore = defineStore("search", () => {
   const activeMaxPrice = ref<number | null>(null);
   const activeMinDuration = ref<number | null>(null);
   const activeMaxDuration = ref<number | null>(null);
-  const activePlayers = ref<number>(2);
+  const activePlayers = ref<number>(0); // 0 = visa alla, oavsett capacity
 
   const allActivities = ref<Activity[]>([]);
 
@@ -69,7 +69,9 @@ export const useSearchStore = defineStore("search", () => {
       }
 
       // Filtrera baserat på antal spelare vs aktivitetens kapacitet
-      if (activePlayers.value > activity.capacity) {
+      // Visa aktivitet om den har tillräcklig kapacitet för antal spelare
+      // Om activePlayers är 0 eller null, visa alla
+      if (activePlayers.value > 0 && activity.capacity < activePlayers.value) {
         return false;
       }
 
@@ -116,14 +118,15 @@ export const useSearchStore = defineStore("search", () => {
     maxPrice.value = null;
     minDuration.value = null;
     maxDuration.value = null;
-    players.value = 2;
+    players.value = 0;
+    // Rensa också aktiva filter så att alla aktiviteter visas
     activeDifficulty.value = null;
     activeAgeRange.value = null;
     activeSelectedDate.value = "";
     activeMaxPrice.value = null;
     activeMinDuration.value = null;
     activeMaxDuration.value = null;
-    activePlayers.value = 2;
+    activePlayers.value = 0; // Sätt till 0 så att alla aktiviteter visas oavsett capacity
   };
 
   return {
