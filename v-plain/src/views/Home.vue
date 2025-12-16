@@ -207,7 +207,7 @@ console.log("Waiting for AI activities or using fallback...");
         <p>🔄 Genererar AI-aktiviteter... Detta kan ta upp till en minut.</p>
       </div>
 
-      <!-- <div class="cards" v-if="filteredActivities.length > 0 && !loading">
+      <div class="cards" v-if="filteredActivities.length > 0 && !loading">
         <Card
           v-for="activity in filteredActivities"
           :key="activity.id"
@@ -221,13 +221,15 @@ console.log("Waiting for AI activities or using fallback...");
           :duration="activity.duration"
           :price="activity.price"
         />
-      </div> -->
+      </div>
 
-      <div class="carousel-wrapper" v-else-if="filteredActivities.length > 0">
-        <Carousel
-          :cards="filteredActivities"
-          :key="filteredActivities.length"
-        />
+      <div v-else-if="!loading" class="loading-state">
+        <p>
+          Inga aktiviteter hittades.
+          <button @click="handleGenerateActivities">
+            Generera aktiviteter
+          </button>
+        </p>
       </div>
 
       <!-- AI-integration: Pagination för att bläddra mellan sidor -->
