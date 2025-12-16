@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import star from "../assets/star.svg";
 import starEmpty from "../assets/starEmpty.svg";
+import { storeToRefs } from "pinia";
+import { useSearchStore } from "../store/searchStore";
+
+const searchStore = useSearchStore();
+const { difficulty, selectedDate, players } = storeToRefs(searchStore);
 
 const cardProps = defineProps({
   id: String,
@@ -20,6 +25,12 @@ const handleImageError = (e: Event) => {
   const target = e.target as HTMLImageElement;
   target.src =
     "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=800&q=80";
+const saveFilter = () => {
+  const filterData = {
+    selectedDate: selectedDate.value,
+    players: players.value,
+  };
+  localStorage.setItem("filterData", JSON.stringify(filterData));
 };
 </script>
 
@@ -41,6 +52,11 @@ const handleImageError = (e: Event) => {
           v-for="(_n, index) in count"
           :key="index"
           :src="index + 1 <= (difficulty || 0) ? star : starEmpty"
+      <img :src="imgLink" alt="" />
+      <div class="card-difficulty">
+        <img
+          v-for="number in count"
+          :src="number <= difficulty! ? star : starEmpty"
           alt=""
         />
       </div>
@@ -78,6 +94,16 @@ const handleImageError = (e: Event) => {
       <p class="card-description">{{ description }}</p>
       <div class="card-footer">
         <RouterLink class="bookBtn" :to="`/activity/${id}`"
+      <article>
+        <h3 class="card-title">{{ title }}</h3>
+        <p class="card-description">{{ description }}</p>
+      </article>
+
+      <div class="card-footer">
+        <RouterLink
+          @click="saveFilter()"
+          class="bookBtn"
+          :to="`/activity/${id}`"
           >Läs mer
 
           <svg viewBox="0 0 24 24" fill="none">
@@ -112,6 +138,8 @@ const handleImageError = (e: Event) => {
   height: 100%;
   display: flex;
   flex-direction: column;
+  width: 360px;
+  height: fit-content;
 }
 
 .card-top {
@@ -143,6 +171,7 @@ const handleImageError = (e: Event) => {
   left: 0;
   display: flex;
   gap: 4px;
+  gap: 6px;
   padding: 12px 16px;
   border-radius: 8px;
   font-weight: 600;
@@ -151,6 +180,8 @@ const handleImageError = (e: Event) => {
 .card-difficulty img {
   width: 21px;
   height: 21px;
+  width: 24px;
+  height: 24px;
 }
 
 .card-info {
@@ -203,6 +234,27 @@ const handleImageError = (e: Event) => {
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  font-size: 16px;
+}
+
+.card-bottom {
+  padding: 21px 36px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.card-description {
+  font-size: 17px;
+  color: var(--text-color);
+  margin-bottom: 16px;
+  line-height: 1.4;
 }
 
 .card-footer {
@@ -234,6 +286,10 @@ const handleImageError = (e: Event) => {
 
 .bookBtn:hover svg path {
   stroke: var(--action-color);
+
+  svg path {
+    stroke: var(--action-color);
+  }
 }
 
 .bookBtn svg {
@@ -259,6 +315,11 @@ const handleImageError = (e: Event) => {
 
 .card-price p:last-child {
   font-size: 12px;
+  font-size: 28px;
+}
+
+.card-price p:last-child {
+  font-size: 14px;
   color: var(--secondary-action-color);
   margin-top: -6px;
 }

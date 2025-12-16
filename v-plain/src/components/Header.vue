@@ -3,6 +3,9 @@
     <div class="header-content">
       <section class="logo">
         <h1>‘SCAPE</h1>
+        <RouterLink to="/">
+          <h1 class="header-logo">‘SCAPE</h1>
+        </RouterLink>
         <svg
           height="24px"
           viewBox="0 -960 960 960"
@@ -36,6 +39,7 @@
     </div>
   </header>
 </template>
+
 <script setup>
 import { ref } from "vue";
 import CartModal from "./cartModal.vue";
@@ -50,12 +54,17 @@ const closeCart = () => {
   isCartOpen.value = false;
 };
 </script>
+
 <style scoped>
 header {
   display: flex;
   justify-content: center;
   padding: 12px 0;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+}
+
+a {
+  text-decoration: none;
 }
 
 .header-content {
@@ -65,9 +74,10 @@ header {
   justify-content: space-between;
 }
 
-.logo h1 {
+.header-logo {
   margin: 0;
   font-size: 62px;
+  color: var(--action-color);
 }
 
 .logo svg {

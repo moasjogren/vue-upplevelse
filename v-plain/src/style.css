@@ -6,11 +6,21 @@
   --action-color: #ff56a2;
   --secondary-action-color: #ffafc5;
   --text-color: #f9edeb;
+  --transparent-color: rgba(255, 255, 255, 0.3);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
 }
 
 #app,
@@ -50,5 +60,5 @@ h2, h3, h4, p {
 main {
   display: flex;
   justify-content: center;
-  width: 100vw;
+  align-items: center;
 }
