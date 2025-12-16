@@ -78,7 +78,7 @@ const removeItem = (id: string) => {
             <span class="total-price">{{ totalPrice }} kr</span>
           </div>
           <div class="checkout-center">
-          <RouterLink :to="'/checkout'" class="checkout-btn">Till Kassan</RouterLink>
+          <RouterLink :to="'/checkout'" @click="closeCart" class="checkout-btn">Till Kassan</RouterLink>
           </div>
         </div>
       </div>

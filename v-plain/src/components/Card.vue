@@ -13,7 +13,7 @@ const cardProps = defineProps({
   title: String,
   description: String,
   difficulty: Number,
-  capacity: String,
+  capacity: Number,
   age: Number,
   duration: Number,
   price: Number,

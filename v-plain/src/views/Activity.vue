@@ -50,16 +50,6 @@ const count: number[] = [1, 2, 3, 4, 5];
                 ></path>
               </g>
             </svg>
-
-            <!-- <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="20px"
-              viewBox="0 -960 960 960"
-              width="20px"
-              fill="#ffafc5"
-            >
-              <path d="M576-288 384-480l192-192v384Z" />
-            </svg> -->
           </button>
           <h1>{{ activityData!.title }}</h1>
         </div>
