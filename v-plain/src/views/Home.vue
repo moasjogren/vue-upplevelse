@@ -24,46 +24,55 @@ onMounted(async () => {
   // Kombinera befintliga aktiviteter med AI-genererade
   const savedActivities = localStorage.getItem("aiActivities");
   let aiGeneratedActivities: Activity[] = [];
-  
+
   if (savedActivities) {
     try {
       aiGeneratedActivities = JSON.parse(savedActivities);
       console.log("Loaded saved AI activities:", aiGeneratedActivities);
-      console.log("Number of saved activities:", aiGeneratedActivities?.length || 0);
-      
+      console.log(
+        "Number of saved activities:",
+        aiGeneratedActivities?.length || 0
+      );
+
       // Validera att sparade aktiviteter har rätt struktur
-      if (!Array.isArray(aiGeneratedActivities) || aiGeneratedActivities.length === 0) {
-        console.log("Saved activities invalid or empty, generating new ones...");
+      if (
+        !Array.isArray(aiGeneratedActivities) ||
+        aiGeneratedActivities.length === 0
+      ) {
+        console.log(
+          "Saved activities invalid or empty, generating new ones..."
+        );
         localStorage.removeItem("aiActivities"); // Rensa felaktiga data
         await handleGenerateActivities();
         return;
       }
-      
+
       // Kontrollera att aktiviteterna har rätt struktur
-      const validActivities = aiGeneratedActivities.filter(activity => 
-        activity.id && activity.title && activity.capacity !== undefined
+      const validActivities = aiGeneratedActivities.filter(
+        (activity) =>
+          activity.id && activity.title && activity.capacity !== undefined
       );
-      
+
       if (validActivities.length === 0) {
         console.log("No valid activities found, generating new ones...");
         localStorage.removeItem("aiActivities");
         await handleGenerateActivities();
         return;
       }
-      
+
       // Använd bara AI-genererade aktiviteter (göm test-aktiviteterna)
       const combinedActivities = validActivities;
       console.log("Using saved AI activities:", {
         ai: validActivities.length,
-        total: combinedActivities.length
+        total: combinedActivities.length,
       });
-      
+
       searchStore.setActivities(combinedActivities);
       searchStore.clearFilters();
-      
+
       console.log("After setting saved activities:", {
         allActivities: searchStore.allActivities.length,
-        filteredActivities: searchStore.filteredActivities.length
+        filteredActivities: searchStore.filteredActivities.length,
       });
     } catch (err) {
       console.error("Failed to load saved activities:", err);
@@ -108,23 +117,23 @@ const handleGenerateActivities = async () => {
 
     // Spara AI-genererade aktiviteter i localStorage
     localStorage.setItem("aiActivities", JSON.stringify(newActivities));
-    
+
     // Använd bara AI-genererade aktiviteter (göm test-aktiviteterna)
     const combinedActivities = newActivities;
     console.log("Using AI-generated activities:", {
       ai: newActivities.length,
-      total: combinedActivities.length
+      total: combinedActivities.length,
     });
-    
+
     searchStore.setActivities(combinedActivities);
     // Se till att filter inte är aktiva från början
     searchStore.clearFilters();
-    
+
     console.log("After setting activities:", {
       allActivities: searchStore.allActivities.length,
-      filteredActivities: searchStore.filteredActivities.length
+      filteredActivities: searchStore.filteredActivities.length,
     });
-    
+
     // Tvinga re-render av cards
     componentKey.value++;
   } catch (err) {
@@ -175,7 +184,7 @@ console.log("Waiting for AI activities or using fallback...");
       <div v-if="error" class="error">{{ error }}</div>
 
       <SearchForm />
-      
+
       <div class="hero-action-symbol">
         <img src="../assets/arrowstar.svg" alt="star" class="star" />
         <svg viewBox="0 0 24 24" fill="none">
@@ -196,7 +205,7 @@ console.log("Waiting for AI activities or using fallback...");
       <div v-if="loading" class="loading-state">
         <p>🔄 Genererar AI-aktiviteter... Detta kan ta upp till en minut.</p>
       </div>
-      
+
       <div class="cards" v-if="filteredActivities.length > 0 && !loading">
         <Card
           v-for="activity in filteredActivities"
@@ -212,9 +221,14 @@ console.log("Waiting for AI activities or using fallback...");
           :price="activity.price"
         />
       </div>
-      
+
       <div v-else-if="!loading" class="loading-state">
-        <p>Inga aktiviteter hittades. <button @click="handleGenerateActivities">Generera aktiviteter</button></p>
+        <p>
+          Inga aktiviteter hittades.
+          <button @click="handleGenerateActivities">
+            Generera aktiviteter
+          </button>
+        </p>
       </div>
 
       <!-- AI-integration: Pagination för att bläddra mellan sidor -->
