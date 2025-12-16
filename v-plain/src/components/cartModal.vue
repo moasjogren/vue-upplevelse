@@ -15,8 +15,8 @@ const activityList = ref<Activity[]>([
         title: "Test Title",
         description: "Lorem Ipsum test text hihi when lorem ipsum went ipsum dipsum",
         difficulty: 3,
-        capacity: "3-6",
-        age: 12,
+        capacity: 6,
+        ageRange: "barn",
         duration: 90,
         price: 319,
         players: 5
@@ -61,7 +61,7 @@ const removeItem = (id: string) => {
                 <div class="item-info">
                   <span class="info-badge">Svårighet: {{ item.difficulty }}/5</span>
                   <span class="info-badge">Antal personer: {{ item.capacity }}</span>
-                  <span class="info-badge">Ålder: {{ item.age }}+</span>
+                  <span class="info-badge">Ålder: {{ item.ageRange }}+</span>
                   <span class="info-badge">Tid: {{ item.duration }} min</span>
                 </div>
               </div>
@@ -78,7 +78,7 @@ const removeItem = (id: string) => {
             <span class="total-price">{{ totalPrice }} kr</span>
           </div>
           <div class="checkout-center">
-          <button class="checkout-btn">Till Kassan</button>
+          <RouterLink :to="'/checkout'" class="checkout-btn">Till Kassan</RouterLink>
           </div>
         </div>
       </div>
