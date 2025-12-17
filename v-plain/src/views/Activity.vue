@@ -310,7 +310,7 @@ const count: number[] = [1, 2, 3, 4, 5];
 
           <div class="add-on-card">
             <div class="add-on-card-left">
-              <img :src="activityData.imgLink" />
+              <img src="../assets/hotel.jpg" />
               <p><span class="kronor">Hotell</span> <br />En natt på Scandic</p>
             </div>
 
@@ -340,7 +340,7 @@ const count: number[] = [1, 2, 3, 4, 5];
           </div>
           <div class="add-on-card">
             <div class="add-on-card-left">
-              <img :src="activityData.imgLink" />
+              <img src="../assets/food.jpg" />
               <p><span class="kronor">Mat</span> <br />Buffé på Vapiano</p>
             </div>
 
@@ -371,7 +371,7 @@ const count: number[] = [1, 2, 3, 4, 5];
 
           <div class="add-on-card">
             <div class="add-on-card-left">
-              <img :src="activityData.imgLink" />
+              <img src="../assets/vr.jpg" />
               <p>
                 <span class="kronor">VR-upplevelse</span> <br />Lös ett escape
                 room i VR!
@@ -726,7 +726,6 @@ const count: number[] = [1, 2, 3, 4, 5];
 }
 
 .total-sum-right p {
-  /* margin-bottom: 8px; */
   font-size: 21px;
 }
 
@@ -768,5 +767,31 @@ const count: number[] = [1, 2, 3, 4, 5];
 .total-sum-left .time-btn {
   display: flex;
   padding: 12px;
+}
+
+@media (max-width: 800px) {
+  .activity-content-text p {
+    font-size: 14px;
+  }
+  .activity-content-text h4 {
+    font-size: 20px;
+  }
+  .activity-content-text p:first-child {
+    font-size: 18px;
+  }
+  svg {
+    height: 20px;
+  }
+
+  .difficulty-box:last-of-type img {
+    width: 20px;
+  }
+
+  .difficulty-box:first-of-type p {
+    font-size: 26px;
+  }
+  .img-container {
+    height: 200px;
+  }
 }
 </style>
