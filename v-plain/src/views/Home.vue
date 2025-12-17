@@ -246,7 +246,7 @@ main {
 }
 .main-content {
   width: 80vw;
-  padding: 124px 0 68px 0;
+  padding: 96px 0 68px 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -285,25 +285,26 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 /* AI-integration: Styling för AI-knappen */
 .ai-button {
   background: linear-gradient(135deg, var(--action-color), #ff7ac2);
-  color: white;
+  color: var(--main-bg-color);
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
   font-family: "Poppins", sans-serif;
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .ai-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 86, 162, 0.4);
+  box-shadow: 0 5px 15px rgba(255, 151, 231, 0.4);
 }
 
 .ai-button:disabled {

@@ -13,11 +13,11 @@ const { difficulty, ageRange, maxPrice, selectedDate, players } =
     <div class="filters">
       <select name="difficulty" id="difficulty" v-model="difficulty">
         <option :value="null">Alla svårighetsgrader</option>
-        <option :value="1">1</option>
-        <option :value="2">2</option>
-        <option :value="3">3</option>
-        <option :value="4">4</option>
-        <option :value="5">5</option>
+        <option :value="1">★☆☆☆☆</option>
+        <option :value="2">★★☆☆☆</option>
+        <option :value="3">★★★☆☆</option>
+        <option :value="4">★★★★☆</option>
+        <option :value="5">★★★★★</option>
       </select>
 
       <Calendar v-model="selectedDate" label="Välj datum" />
@@ -57,33 +57,43 @@ const { difficulty, ageRange, maxPrice, selectedDate, players } =
 
 <style scoped>
 .search-container {
-  width: 80%;
   margin-bottom: 20px;
 }
 
 .filters {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
   flex-wrap: wrap;
   align-items: center;
 }
 
 .filters input,
 .filters select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: var(--secondary-action-color);
+  font-family: 'poppins';
+  padding: 16px;
+  border-radius: 8px;
+  background-color: white;
 }
 
 .filters button {
-  padding: 8px 16px;
+  padding: 16px;
   cursor: pointer;
   background-color: var(--action-color);
   border: none;
-  border-radius: 4px;
-  color: white;
+  border-radius: 8px;
+  color: var(--main-bg-color);
+  font-family: 'poppins','Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.filters button:last-child {
+  background-color: var(--main-box-color);
+  color: var(--secondary-action-color);
+}
+
+.filters button:hover {
+  opacity: 0.8;
 }
 
 .search-input::placeholder {
