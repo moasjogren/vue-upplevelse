@@ -21,6 +21,10 @@ const handleDelete = (id:string):void => {
   bookingQuery.value = bookingQuery.value.filter((item: any) => item.id !== id);
   localStorage.setItem("bookingData", JSON.stringify(bookingQuery.value));
 }
+
+const checkout = ():void => {
+  localStorage.removeItem("bookingData");
+}
 </script>
 
 <template>
@@ -97,7 +101,7 @@ const handleDelete = (id:string):void => {
               <svg height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M267.33-120q-27.5 0-47.08-19.58-19.58-19.59-19.58-47.09V-740H160v-66.67h192V-840h256v33.33h192V-740h-40.67v553.33q0 27-19.83 46.84Q719.67-120 692.67-120H267.33Zm425.34-620H267.33v553.33h425.34V-740Zm-328 469.33h66.66v-386h-66.66v386Zm164 0h66.66v-386h-66.66v386ZM267.33-740v553.33V-740Z"/></svg>
             </button> 
           </div>
-          <RouterLink :to="{ name: 'success' }" class="buy-btn">Betala</RouterLink>
+          <RouterLink :to="{ name: 'success' }" class="buy-btn" @click.prevent="checkout()">Betala</RouterLink>
         </li>
       </ul>
 

@@ -20,7 +20,12 @@ const closeCart = () => {
 
 const removeItem = (id: string) => {
   bookingData.value = bookingData.value.filter((item) => item.id !== id);
-  localStorage.setItem("bookingData", JSON.stringify(bookingData.value));
+
+  if(bookingData.value.length > 0) {
+    localStorage.setItem("bookingData", JSON.stringify(bookingData.value));
+  } else {
+    localStorage.removeItem("bookingData");
+  }
 };
 
 onMounted(() => {
@@ -67,7 +72,9 @@ onMounted(() => {
               </div>
               <div class="item-price">
                 <p>{{ item.price }} kr</p>
-                <button @click="removeItem(item.id)">Ta bort</button>
+                <button @click="removeItem(item.id)" class="delete-btn">
+                  <svg height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M267.33-120q-27.5 0-47.08-19.58-19.58-19.59-19.58-47.09V-740H160v-66.67h192V-840h256v33.33h192V-740h-40.67v553.33q0 27-19.83 46.84Q719.67-120 692.67-120H267.33Zm425.34-620H267.33v553.33h425.34V-740Zm-328 469.33h66.66v-386h-66.66v386Zm164 0h66.66v-386h-66.66v386ZM267.33-740v553.33V-740Z"/></svg>
+                </button>
               </div>
             </div>
           </div>
@@ -105,40 +112,40 @@ onMounted(() => {
   z-index: 1000;
 }
 .modal-content {
-  background: white;
+  background: var(--main-bg-color);
   border-radius: 12px;
   width: 90%;
   max-width: 600px;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--transparent-color);
 }
 .modal-header h2 {
   margin: 0;
-  color: #ff56a2;
+  color: var(--action-color);
 }
 
 .close-btn {
   all: unset;
   cursor: pointer;
-  padding: 8px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   border-radius: 6px;
   transition: 0.2s;
-  color: #ff56a2;
+  color: var(--action-color);
 }
 
 .close-btn:hover {
-  background-color: #f5f5f5;
+  background-color: var(--main-box-color);
 }
 
 .cart-items {
@@ -149,22 +156,23 @@ onMounted(() => {
 
 .empty-cart {
   text-align: center;
+  font-style: italic;
   padding: 40px 20px;
-  color: #999;
+  color: var(--transparent-color);
 }
 
 .cart-item {
   display: flex;
   gap: 16px;
   padding: 16px;
-  border: 1px solid #eee;
+  background-color: var(--main-box-color);
   border-radius: 8px;
   margin-bottom: 12px;
   transition: 0.2s;
 }
 
 .cart-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .cart-item img {
@@ -184,7 +192,7 @@ onMounted(() => {
 }
 
 .item-description {
-  color: #666;
+  color: var(--text-color);
   font-size: 14px;
   margin: 0 0 12px 0;
   line-height: 1.4;
@@ -198,8 +206,8 @@ onMounted(() => {
 }
 
 .info-badge {
-  background-color: #f0f0f0;
-  color: #666;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--secondary-action-color);
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
@@ -207,7 +215,7 @@ onMounted(() => {
 }
 
 .item-category {
-  color: #666;
+  color: var(--text-color);
   font-size: 14px;
   margin: 0 0 12px 0;
 }
@@ -219,7 +227,7 @@ onMounted(() => {
 }
 
 .item-details {
-  color: #ff56a2;
+  color: var(--action-color);
 }
 
 .item-quantity button {
@@ -237,10 +245,6 @@ onMounted(() => {
   transition: 0.2s;
 }
 
-.item-quantity button:hover {
-  opacity: 0.8;
-}
-
 .item-price {
   text-align: right;
   display: flex;
@@ -252,24 +256,12 @@ onMounted(() => {
   margin: 0;
   font-weight: 600;
   font-size: 18px;
-  color: #ff56a2;
-}
-
-.remove-btn {
-  all: unset;
-  cursor: pointer;
-  color: #e74c3c;
-  font-size: 14px;
-  transition: 0.2s;
-}
-
-.remove-btn:hover {
-  text-decoration: underline;
+  color: var(--action-color);
 }
 
 .cart-footer {
   padding: 20px 24px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--transparent-color);
   align-items: center;
 }
 .total {
@@ -278,8 +270,8 @@ onMounted(() => {
   align-items: center;
   margin-bottom: 16px;
   font-size: 20px;
-  font-weight: 600;
-  color: #ff56a2;
+  font-weight: 500;
+  color: var(--text-color);
 }
 
 .total-price {
@@ -291,8 +283,8 @@ onMounted(() => {
   cursor: pointer;
   width: 50%;
   padding: 14px;
-  background: var(--action-color);
-  color: white;
+  background: var(--secondary-action-color);
+  color: var(--main-bg-color);
   text-align: center;
   border-radius: 8px;
   font-weight: 600;
@@ -300,29 +292,30 @@ onMounted(() => {
   transition: 0.2s;
 }
 
-.item-price button {
-  all: unset;
-  cursor: pointer;
-  color: #ff56a2;
-  font-size: 14px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: 0.2s;
-  font-weight: 500;
+.checkout-btn:hover {
+  background-color: var(--action-color);
 }
 
-.item-price button:hover {
-  background-color: #ffe5e5;
-  text-decoration: underline;
+.delete-btn {
+  all: unset;
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
+  border-radius: 4px;
+  transition: 0.2s;
+}
+
+.delete-btn svg {
+  fill: var(--transparent-color);
+}
+
+.delete-btn:hover {
+  background-color: rgb(119, 0, 64)
 }
 
 .checkout-center {
   display: flex;
   justify-content: center;
-}
-
-.checkout-btn:hover {
-  opacity: 0.9;
 }
 
 /* Transition animations */
