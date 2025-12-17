@@ -55,8 +55,12 @@ onMounted(() => {
                 <h3>{{ item.title }}</h3>
                 <p class="item-description">{{ item.description }}</p>
                 <div class="item-info">
-                  <span class="info-badge">Svårighet: {{ item.difficulty }}/5</span>
-                  <span class="info-badge">Antal personer: {{ item.capacity }}</span>
+                  <span class="info-badge"
+                    >Svårighet: {{ item.difficulty }}/5</span
+                  >
+                  <span class="info-badge"
+                    >Antal personer: {{ item.capacity }}</span
+                  >
                   <span class="info-badge">Ålder: {{ item.ageRange }}+</span>
                   <span class="info-badge">Tid: {{ item.duration }} min</span>
                 </div>
@@ -74,7 +78,12 @@ onMounted(() => {
             <span class="total-price">{{ totalPrice }} kr</span>
           </div>
           <div class="checkout-center">
-          <RouterLink :to="'/checkout'" @click="closeCart" class="checkout-btn">Till Kassan</RouterLink>
+            <RouterLink
+              :to="'/checkout'"
+              @click="closeCart"
+              class="checkout-btn"
+              >Till Kassan</RouterLink
+            >
           </div>
         </div>
       </div>
