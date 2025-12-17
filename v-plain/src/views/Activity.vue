@@ -5,8 +5,8 @@ import activityList from "../data/Activity";
 import type { Activity } from "../data/Activity";
 import star from "../assets/star.svg";
 import starEmpty from "../assets/starEmpty.svg";
-import {useSearchStore} from "../store/searchStore";
-import {useCartStore} from "../store/cart";
+import { useSearchStore } from "../store/searchStore";
+import { useCartStore } from "../store/cart";
 
 const route = useRoute();
 const router = useRouter();
@@ -15,6 +15,7 @@ const searchStore = useSearchStore();
 const cartStore = useCartStore();
 
 const selectedDate = ref<string>("");
+const selectedTime = ref<string>("");
 const players = ref<number>(2);
 const ageRange = ref<string>("");
 
@@ -24,21 +25,24 @@ onMounted(() => {
   const queryDate = route.query.date as string;
   const queryPlayers = route.query.players as string;
   const queryAgeRange = route.query.ageRange as string;
-  
+
   if (queryDate || queryPlayers || queryAgeRange) {
     // Använd query params om de finns
     selectedDate.value = queryDate || "";
     players.value = queryPlayers ? parseInt(queryPlayers) : 2;
     ageRange.value = queryAgeRange || "";
-    
+
     // Spara också i localStorage för framtida användning
-    localStorage.setItem("filterData", JSON.stringify({
-      selectedDate: selectedDate.value,
-      players: players.value,
-      ageRange: ageRange.value,
-    }));
-    
-    // Uppdatera searchStore också
+    localStorage.setItem(
+      "filterData",
+      JSON.stringify({
+        selectedDate: selectedDate.value,
+        players: players.value,
+        ageRange: ageRange.value,
+      })
+    );
+
+    // Uppdatera searchStore
     if (selectedDate.value) searchStore.selectedDate = selectedDate.value;
     if (players.value) searchStore.players = players.value;
     if (ageRange.value) searchStore.ageRange = ageRange.value;
@@ -68,9 +72,8 @@ onMounted(() => {
     }
   }
 
-  activityData.value = allActivities.find(
-    (activity) => activity.id === route.params.id
-  ) || null;
+  activityData.value =
+    allActivities.find((activity) => activity.id === route.params.id) || null;
 });
 
 function goBack() {
@@ -104,6 +107,10 @@ function toggleAddOn(addOn: "hotel" | "food" | "vr") {
   if (addOn === "vr") vrAdded.value = !vrAdded.value;
 }
 
+function selectTime(time: "11:00" | "13:00" | "15:00" | "17:00" | "19:00") {
+  selectedTime.value = time;
+}
+
 function saveBooking() {
   const bookingData = {
     id: activityData.value?.id || "",
@@ -116,6 +123,7 @@ function saveBooking() {
     price: totalPrice.value,
     ageRange: activityData.value?.ageRange || "vuxen",
     selectedDate: selectedDate.value,
+    selectedTime: selectedTime.value,
     players: players.value,
     addOns: {
       hotel: hotelAdded.value,
@@ -132,17 +140,16 @@ function saveBooking() {
 }
 
 function goToCheckout() {
-  // Spara bokning först
   saveBooking();
-  
+
   // Lägg aktivitet i kundkorgen
   if (activityData.value) {
     cartStore.addItem(activityData.value);
   }
-  
+
   // Navigera till checkout med query params
   const query: Record<string, string | number> = {};
-  
+
   if (selectedDate.value) {
     query.date = selectedDate.value;
   }
@@ -155,7 +162,7 @@ function goToCheckout() {
   if (activityData.value?.id) {
     query.activityId = activityData.value.id;
   }
-  
+
   router.push({
     path: "/checkout",
     query: query,
@@ -261,12 +268,41 @@ const count: number[] = [1, 2, 3, 4, 5];
           </p>
         </div>
         <div class="schedule-times">
-          <button class="time-btn">11:00</button>
-          <button class="time-btn">13:00</button>
-          <button class="time-btn">15:00</button>
-          <button class="time-btn">17:00</button>
-          <button class="time-btn">19:00</button>
-          <button class="time-btn">21:00</button>
+          <button
+            class="time-btn"
+            :class="{ active: selectedTime === '11:00' }"
+            @click.prevent="selectTime('11:00')"
+          >
+            11:00
+          </button>
+          <button
+            class="time-btn"
+            :class="{ active: selectedTime === '13:00' }"
+            @click.prevent="selectTime('13:00')"
+          >
+            13:00
+          </button>
+          <button
+            class="time-btn"
+            :class="{ active: selectedTime === '15:00' }"
+            @click.prevent="selectTime('15:00')"
+          >
+            15:00
+          </button>
+          <button
+            class="time-btn"
+            :class="{ active: selectedTime === '17:00' }"
+            @click.prevent="selectTime('17:00')"
+          >
+            17:00
+          </button>
+          <button
+            class="time-btn"
+            :class="{ active: selectedTime === '19:00' }"
+            @click.prevent="selectTime('19:00')"
+          >
+            19:00
+          </button>
         </div>
 
         <div class="add-ons">
@@ -572,16 +608,18 @@ const count: number[] = [1, 2, 3, 4, 5];
   display: flex;
   justify-content: space-between;
   margin: 20px 0;
+  max-width: 400px;
+  gap: 10px;
 }
 
 .time-btn {
   background-color: var(--main-bg-color);
   color: var(--secondary-action-color);
   border: solid 2px var(--main-bg-color);
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;

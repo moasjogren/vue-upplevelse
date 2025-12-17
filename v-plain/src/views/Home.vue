@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 // import Card from "../components/Card.vue";
 import ChatBot from "../components/ChatBot.vue";
 import Hero from "../components/HeroBanner.vue";
@@ -162,7 +162,13 @@ const { filteredActivities } = storeToRefs(searchStore);
 // Sätt inga aktiviteter initialt - vänta på AI-genererade eller använd test-aktiviteterna som fallback
 // searchStore.setActivities(activityList); // Göm test-aktiviteterna
 searchStore.clearFilters();
-console.log("Waiting for AI activities or using fallback...");
+
+const scrollToCarousel = () => {
+  const element = document.querySelector(".carousel-wrapper");
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+};
 </script>
 
 <template>
@@ -170,7 +176,6 @@ console.log("Waiting for AI activities or using fallback...");
     <Hero />
     <div class="main-content">
       <div class="header-section">
-        <h1>Home</h1>
         <!-- AI-integration: Knapp för att generera nya rum -->
         <button
           class="ai-button"
@@ -186,7 +191,7 @@ console.log("Waiting for AI activities or using fallback...");
 
       <SearchForm />
 
-      <div class="hero-action-symbol">
+      <div class="hero-action-symbol" @click="scrollToCarousel()">
         <img src="../assets/arrowstar.svg" alt="star" class="star" />
         <svg viewBox="0 0 24 24" fill="none">
           <g stroke-width="0"></g>
@@ -212,7 +217,7 @@ console.log("Waiting for AI activities or using fallback...");
           :cards="filteredActivities"
           :key="filteredActivities.length"
         />
-        </div>
+      </div>
 
       <div v-else-if="!loading" class="loading-state">
         <p>
@@ -222,8 +227,6 @@ console.log("Waiting for AI activities or using fallback...");
           </button>
         </p>
       </div>
-
-  
     </div>
 
     <!-- Floating chat button -->

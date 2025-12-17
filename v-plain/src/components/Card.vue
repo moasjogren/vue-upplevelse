@@ -3,7 +3,7 @@ import star from "../assets/star.svg";
 import starEmpty from "../assets/starEmpty.svg";
 import { storeToRefs } from "pinia";
 import { useSearchStore } from "../store/searchStore";
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 const searchStore = useSearchStore();
@@ -27,13 +27,13 @@ const saveFilterAndNavigate = () => {
   const filterData = {
     selectedDate: selectedDate.value,
     players: players.value,
-    ageRange: ageRange.value
+    ageRange: ageRange.value,
   };
   localStorage.setItem("filterData", JSON.stringify(filterData));
 
   const query: Record<string, string | number> = {};
 
-  if(selectedDate.value){
+  if (selectedDate.value) {
     query.date = selectedDate.value;
   }
 
@@ -43,19 +43,18 @@ const saveFilterAndNavigate = () => {
   if (ageRange.value) {
     query.ageRange = ageRange.value;
   }
-  
+
   router.push({
     path: `/activity/${cardProps.id}`,
     query: query,
   });
-}
+};
 
 const handleImageError = (e: Event) => {
   const target = e.target as HTMLImageElement;
   target.src =
     "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=800&q=80";
 };
-
 </script>
 
 <template>
@@ -150,7 +149,6 @@ const handleImageError = (e: Event) => {
   display: flex;
   flex-direction: column;
   width: 360px;
-  /* height: fit-content; */
   min-height: 400px;
 }
 
@@ -301,5 +299,11 @@ const handleImageError = (e: Event) => {
   font-size: 14px;
   color: var(--secondary-action-color);
   margin-top: -6px;
+}
+
+@media (max-width: 800px) {
+  .card-container {
+    width: 320px;
+  }
 }
 </style>
