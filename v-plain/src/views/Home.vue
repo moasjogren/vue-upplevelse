@@ -88,18 +88,6 @@ onMounted(async () => {
   }
 });
 
-// AI-integration: Beräkna vilka aktiviteter som ska visas på nuvarande sida
-// const paginatedActivities = computed(() => {
-//   const start = (currentPage.value - 1) * itemsPerPage;
-//   const end = start + itemsPerPage;
-//   return filteredActivities.value.slice(start, end);
-// });
-
-// AI-integration: Beräkna totalt antal sidor
-// const totalPages = computed(() => {
-//   return Math.ceil(filteredActivities.value.length / itemsPerPage);
-// });
-
 // AI-integration: Funktion som anropar backend för att generera nya aktiviteter
 const handleGenerateActivities = async () => {
   loading.value = true;
@@ -147,14 +135,6 @@ const handleGenerateActivities = async () => {
     loading.value = false;
   }
 };
-
-// AI-integration: Navigeringsfunktioner för pagination
-// const goToPage = (page: number) => {
-//   if (page >= 1 && page <= totalPages.value) {
-//     currentPage.value = page;
-//     window.scrollTo({ top: 0, behavior: "smooth" });
-//   }
-// };
 
 const searchStore = useSearchStore();
 const { filteredActivities } = storeToRefs(searchStore);

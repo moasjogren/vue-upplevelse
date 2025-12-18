@@ -1,3 +1,5 @@
+// Dummydata som användes i början av projektet
+
 export interface Activity {
   id: string;
   imgLink: string;

@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'; 
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-// import { computed } from "vue";
-// import { useCartStore } from "../store/cart.ts";
-// import type { Activity } from "../data/Activity.ts";
-
-// const cartStore = useCartStore();
 const router = useRouter();
 
 const bookingData = localStorage.getItem("bookingData");
@@ -17,14 +12,14 @@ function goBack() {
   router.go(-1);
 }
 
-const handleDelete = (id:string):void => {
+const handleDelete = (id: string): void => {
   bookingQuery.value = bookingQuery.value.filter((item: any) => item.id !== id);
   localStorage.setItem("bookingData", JSON.stringify(bookingQuery.value));
-}
+};
 
-const checkout = ():void => {
+const checkout = (): void => {
   localStorage.removeItem("bookingData");
-}
+};
 </script>
 
 <template>
@@ -35,35 +30,31 @@ const checkout = ():void => {
           <g stroke-width="0"></g>
           <g stroke-linecap="round" stroke-linejoin="round"></g>
           <g>
-          <path
-            d="M5 12H19M19 12L13 6M19 12L13 18"
-            stroke="#ffafc5"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></path>
+            <path
+              d="M5 12H19M19 12L13 6M19 12L13 18"
+              stroke="#ffafc5"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
           </g>
         </svg>
       </button>
-      <svg
-        height="36px"
-        viewBox="0 -960 960 960"
-        width="36px"
-        fill="#F9EDEB"
-      >
-      <path
-        d="m480-560-56-56 63-64H320v-80h167l-64-64 57-56 160 160-160 160ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"
-      />
+      <svg height="36px" viewBox="0 -960 960 960" width="36px" fill="#F9EDEB">
+        <path
+          d="m480-560-56-56 63-64H320v-80h167l-64-64 57-56 160 160-160 160ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"
+        />
       </svg>
       <h1>Kundkorg</h1>
     </div>
     <div class="checkout-container">
       <ul class="checkout-lista" v-if="bookingQuery.length > 0">
-        <li v-for="item in bookingQuery" :key="item.id"><!-- v-for="item in cartStore.cart.items" :key="item.id" -->
+        <li v-for="item in bookingQuery" :key="item.id">
           <section class="item-header">
-            <h3>{{item.title}}</h3> <!-- {{ item.title }} -->
+            <h3>{{ item.title }}</h3>
+
             <div class="right-section">
-                <svg
+              <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="36px"
                 viewBox="0 -1150 960 1260"
@@ -76,17 +67,19 @@ const checkout = ():void => {
               </svg>
               <p>{{ item.players }} x</p>
             </div>
-            
           </section>
           <div class="indicators">
-            <p v-if="item.selectedDate">{{item.selectedDate}}</p>
+            <p v-if="item.selectedDate">{{ item.selectedDate }}</p>
             <p v-else class="null">Inget datum valt</p>
 
-            <p v-if="item.selectedTime">{{item.selectedTime}}</p>
+            <p v-if="item.selectedTime">{{ item.selectedTime }}</p>
             <p v-else class="null">Ingen tid vald</p>
           </div>
-          
-          <section class="add-ons" v-if="item.addOns && Object.values(item.addOns).some(v => v)"> 
+
+          <section
+            class="add-ons"
+            v-if="item.addOns && Object.values(item.addOns).some((v) => v)"
+          >
             <h4>Tillägg</h4>
             <div class="indicators">
               <p v-if="item.addOns.hotel">+ Hotell<span></span>899 kr</p>
@@ -97,45 +90,60 @@ const checkout = ():void => {
           <h3 class="total">Totalt:</h3>
           <div class="footer">
             <p class="total-price">{{ item.price }} kr</p>
-            <button @click.prevent="handleDelete(item.id)" class="delete-btn"> <!-- @click="cartStore.removeItem(item.id)" -->
-              <svg height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M267.33-120q-27.5 0-47.08-19.58-19.58-19.59-19.58-47.09V-740H160v-66.67h192V-840h256v33.33h192V-740h-40.67v553.33q0 27-19.83 46.84Q719.67-120 692.67-120H267.33Zm425.34-620H267.33v553.33h425.34V-740Zm-328 469.33h66.66v-386h-66.66v386Zm164 0h66.66v-386h-66.66v386ZM267.33-740v553.33V-740Z"/></svg>
-            </button> 
+            <button @click.prevent="handleDelete(item.id)" class="delete-btn">
+              <svg
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#000000"
+              >
+                <path
+                  d="M267.33-120q-27.5 0-47.08-19.58-19.58-19.59-19.58-47.09V-740H160v-66.67h192V-840h256v33.33h192V-740h-40.67v553.33q0 27-19.83 46.84Q719.67-120 692.67-120H267.33Zm425.34-620H267.33v553.33h425.34V-740Zm-328 469.33h66.66v-386h-66.66v386Zm164 0h66.66v-386h-66.66v386ZM267.33-740v553.33V-740Z"
+                />
+              </svg>
+            </button>
           </div>
-          <RouterLink :to="{ name: 'success' }" class="buy-btn" @click.prevent="checkout()">Betala</RouterLink>
+          <RouterLink
+            :to="{ name: 'success' }"
+            class="buy-btn"
+            @click.prevent="checkout()"
+            >Betala</RouterLink
+          >
         </li>
       </ul>
 
       <div v-else class="empty-cart">
         <p>Din varukorg är tom</p>
-        <img src="../assets/undraw_void_wez2.svg" alt="void">
+        <img src="../assets/undraw_void_wez2.svg" alt="void" />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-  .content-wrapper {
-    display: flex;
-    flex-direction: column;
-    width: 80vw;
-  }
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 80vw;
+}
 
-  h3, h4 {
-    font-weight: 500;
-  }
+h3,
+h4 {
+  font-weight: 500;
+}
 
-  h3 {
-    font-size: 24px;
-  }
+h3 {
+  font-size: 24px;
+}
 
-  .title-container {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--text-color);
-  }
+.title-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-color);
+}
 
-  .back-btn {
+.back-btn {
   background: none;
   border: none;
   text-decoration: none;
@@ -203,7 +211,7 @@ li {
 
 .add-ons {
   margin-top: 24px;
-  border-top: 2px dashed var(--transparent-color)
+  border-top: 2px dashed var(--transparent-color);
 }
 
 .add-ons h4 {
@@ -261,7 +269,7 @@ button {
 }
 
 .delete-btn:hover {
-  background-color: rgb(119, 0, 64)
+  background-color: rgb(119, 0, 64);
 }
 
 .buy-btn {
@@ -293,7 +301,7 @@ button {
   margin: 48px 0;
 }
 
-.null{
+.null {
   font-style: italic;
   opacity: 0.8;
 }

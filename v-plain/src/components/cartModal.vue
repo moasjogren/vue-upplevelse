@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import type { Activity } from "../data/Activity.ts";
 
 const props = defineProps({
@@ -21,24 +21,37 @@ const closeCart = () => {
 const removeItem = (id: string) => {
   bookingData.value = bookingData.value.filter((item) => item.id !== id);
 
-  if(bookingData.value.length > 0) {
+  if (bookingData.value.length > 0) {
     localStorage.setItem("bookingData", JSON.stringify(bookingData.value));
   } else {
     localStorage.removeItem("bookingData");
   }
 };
 
-onMounted(() => {
+const loadBookingData = () => {
   const storedData = localStorage.getItem("bookingData");
   if (storedData) {
     try {
       bookingData.value = JSON.parse(storedData);
-      console.log(bookingData.value);
+      console.log("Loaded booking data:", bookingData.value);
     } catch (error) {
       console.error("Failed to parse booking data:", error);
     }
   }
+};
+
+onMounted(() => {
+  loadBookingData();
 });
+
+watch(
+  () => props.isOpen,
+  (newValue) => {
+    if (newValue) {
+      loadBookingData();
+    }
+  }
+);
 </script>
 
 <template>
@@ -73,7 +86,16 @@ onMounted(() => {
               <div class="item-price">
                 <p>{{ item.price }} kr</p>
                 <button @click="removeItem(item.id)" class="delete-btn">
-                  <svg height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M267.33-120q-27.5 0-47.08-19.58-19.58-19.59-19.58-47.09V-740H160v-66.67h192V-840h256v33.33h192V-740h-40.67v553.33q0 27-19.83 46.84Q719.67-120 692.67-120H267.33Zm425.34-620H267.33v553.33h425.34V-740Zm-328 469.33h66.66v-386h-66.66v386Zm164 0h66.66v-386h-66.66v386ZM267.33-740v553.33V-740Z"/></svg>
+                  <svg
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#000000"
+                  >
+                    <path
+                      d="M267.33-120q-27.5 0-47.08-19.58-19.58-19.59-19.58-47.09V-740H160v-66.67h192V-840h256v33.33h192V-740h-40.67v553.33q0 27-19.83 46.84Q719.67-120 692.67-120H267.33Zm425.34-620H267.33v553.33h425.34V-740Zm-328 469.33h66.66v-386h-66.66v386Zm164 0h66.66v-386h-66.66v386ZM267.33-740v553.33V-740Z"
+                    />
+                  </svg>
                 </button>
               </div>
             </div>
@@ -310,7 +332,7 @@ onMounted(() => {
 }
 
 .delete-btn:hover {
-  background-color: rgb(119, 0, 64)
+  background-color: rgb(119, 0, 64);
 }
 
 .checkout-center {

@@ -112,31 +112,32 @@ function selectTime(time: "11:00" | "13:00" | "15:00" | "17:00" | "19:00") {
 }
 
 function saveBooking() {
-  const bookingData = {
-    id: activityData.value?.id || "",
-    imgLink: activityData.value?.imgLink || "",
-    title: activityData.value?.title || "",
-    description: activityData.value?.description || "",
-    difficulty: activityData.value?.difficulty || 0,
+  if (!activityData.value) return;
+
+  const bookingItem: Activity = {
+    id: activityData.value.id,
+    imgLink: activityData.value.imgLink,
+    title: activityData.value.title,
+    description: activityData.value.description,
+    difficulty: activityData.value.difficulty,
     capacity: players.value,
-    duration: activityData.value?.duration || 0,
+    duration: activityData.value.duration,
     price: totalPrice.value,
-    ageRange: activityData.value?.ageRange || "vuxen",
-    selectedDate: selectedDate.value,
-    selectedTime: selectedTime.value,
-    players: players.value,
-    addOns: {
-      hotel: hotelAdded.value,
-      food: foodAdded.value,
-      vr: vrAdded.value,
-    },
+    ageRange: activityData.value.ageRange,
   };
+
   const existingBookings = localStorage.getItem("bookingData");
-  const bookings = existingBookings ? JSON.parse(existingBookings) : [];
+  const bookings: Activity[] = existingBookings
+    ? JSON.parse(existingBookings)
+    : [];
 
-  bookings.push(bookingData);
+  // Undvik dubbletter - ta bort befintlig bokning med samma id om den finns
+  const filteredBookings = bookings.filter(
+    (booking) => booking.id !== bookingItem.id
+  );
+  filteredBookings.push(bookingItem);
 
-  localStorage.setItem("bookingData", JSON.stringify(bookings));
+  localStorage.setItem("bookingData", JSON.stringify(filteredBookings));
 }
 
 function goToCheckout() {
