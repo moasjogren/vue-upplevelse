@@ -7,7 +7,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 // Skapar en Gemini-klient med API-nyckel från miljövariabeln
 const apiKey = process.env.GEMINI_API_KEY || "";
 if (!apiKey) {
-  console.warn("[Gemini] ⚠️  WARNING: GEMINI_API_KEY is not set! AI generation will use mock data.");
+  console.warn(
+    "[Gemini] ⚠️  WARNING: GEMINI_API_KEY is not set! AI generation will use mock data."
+  );
 }
 const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
@@ -68,7 +70,7 @@ export async function generateActivities(
       "Alkemistens Laboratorium",
       "Det Försvunna Mysteriet",
       "Cyberpunk-uppdraget",
-      "Vikingarnas Saga"
+      "Vikingarnas Saga",
     ];
     const mockDescriptions = [
       "Ett mystiskt bibliotek där böcker försvinner och hemligheter gömmer sig. Hitta den försvunna boken innan tiden tar slut!",
@@ -79,19 +81,27 @@ export async function generateActivities(
       "En alkemist har lämnat efter sig ett laboratorium fullt av pussel. Skapa den magiska elixiren för att rädda världen.",
       "Ett mysterium där någon har försvunnit. Hitta ledtrådarna och lös fallet innan det är för sent.",
       "I en cyberpunk-framtid måste du hacka dig in i systemet och stoppa en ond AI. Teknisk kunskap krävs!",
-      "En vikingasaga där du måste hjälpa vikingarna att hitta hem. Navigera genom historien och lös gåtorna."
+      "En vikingasaga där du måste hjälpa vikingarna att hitta hem. Navigera genom historien och lös gåtorna.",
     ];
-    
+
     return Array.from({ length: count }, (_, i) => ({
       id: `room-${i + 1}`,
       imgLink: images[i] ?? images[0] ?? "",
-      title: mockTitles[i % mockTitles.length] + (i >= mockTitles.length ? ` ${Math.floor(i / mockTitles.length) + 1}` : ""),
-      description: mockDescriptions[i % mockDescriptions.length] || "En spännande escape room-upplevelse!",
+      title:
+        mockTitles[i % mockTitles.length] +
+        (i >= mockTitles.length
+          ? ` ${Math.floor(i / mockTitles.length) + 1}`
+          : ""),
+      description:
+        mockDescriptions[i % mockDescriptions.length] ||
+        "En spännande escape room-upplevelse!",
       difficulty: Math.floor(Math.random() * 3) + 2, // 2-4
       capacity: Math.floor(Math.random() * 5) + 3, // 3-7
       duration: Math.floor(Math.random() * 30) + 60, // 60-90
       price: Math.floor(Math.random() * 200) + 250, // 250-450
-      ageRange: (["barn", "vuxen", "senior"] as const)[Math.floor(Math.random() * 3)] || "vuxen",
+      ageRange:
+        (["barn", "vuxen", "senior"] as const)[Math.floor(Math.random() * 3)] ||
+        "vuxen",
     }));
   };
 
@@ -102,21 +112,43 @@ export async function generateActivities(
   console.log(`[Gemini] Sending request to generate ${count} activities...`);
   console.log(`[Gemini] API Key present: ${!!apiKey}`);
   const startTime = Date.now();
-  
+
   // Om ingen API-nyckel finns, använd mock-data direkt
   if (!apiKey) {
     console.log(`[Gemini] No API key, using mock data immediately`);
     return generateMockActivities();
   }
-  
+
   try {
-    // Skapa en Promise med timeout (10 sekunder)
-    const generatePromise = model.generateContent(prompt);
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error("Gemini API timeout after 10 seconds")), 10000);
-    });
-    
-    const result = await Promise.race([generatePromise, timeoutPromise]) as any;
+    // Skapa en Promise med timeout (30 sekunder för större requests)
+    let result: any;
+    let retries = 2; // Försök 2 gånger vid timeout
+
+    while (retries >= 0) {
+      try {
+        const generatePromise = model.generateContent(prompt);
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(
+            () => reject(new Error("Gemini API timeout after 30 seconds")),
+            30000
+          );
+        });
+
+        result = (await Promise.race([generatePromise, timeoutPromise])) as any;
+        break; // Lyckat anrop, bryt loopen
+      } catch (retryError: any) {
+        if (retries > 0 && retryError.message.includes("timeout")) {
+          console.log(
+            `[Gemini] ⏱️ Timeout, retrying... (${retries} attempts left)`
+          );
+          retries--;
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Vänta 1 sekund innan retry
+        } else {
+          throw retryError; // Kasta vidare om inga retries kvar
+        }
+      }
+    }
+
     const duration = Date.now() - startTime;
     console.log(`[Gemini] Received response from AI after ${duration}ms`);
 
@@ -124,7 +156,9 @@ export async function generateActivities(
     const response = result.response;
     let content = response.text() || "[]";
     console.log(`[Gemini] Raw response length: ${content.length} characters`);
-    console.log(`[Gemini] Raw response preview: ${content.substring(0, 200)}...`);
+    console.log(
+      `[Gemini] Raw response preview: ${content.substring(0, 200)}...`
+    );
 
     // Rensa bort eventuella markdown code blocks (```json ... ```)
     content = content
@@ -139,7 +173,10 @@ export async function generateActivities(
       activities = JSON.parse(content);
     } catch (parseError) {
       console.error(`[Gemini] JSON parse error:`, parseError);
-      console.error(`[Gemini] Content that failed to parse:`, content.substring(0, 500));
+      console.error(
+        `[Gemini] Content that failed to parse:`,
+        content.substring(0, 500)
+      );
       throw new Error(`Failed to parse AI response as JSON: ${parseError}`);
     }
 
